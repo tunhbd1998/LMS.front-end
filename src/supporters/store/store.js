@@ -3,6 +3,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
 import { commonReducer } from './common.reducer';
+import { authReducer } from './auth.reducer';
 
 class Store {
   constructor() {
@@ -21,7 +22,7 @@ class Store {
       return this.instance;
     }
 
-    this.init({ commonReducer }, [thunk]);
+    this.init({ commonReducer, authReducer }, [thunk]);
     this.instance = createStore(
       combineReducers(this.reducers),
       process.env.REACT_APP_NODE_ENV === 'development'

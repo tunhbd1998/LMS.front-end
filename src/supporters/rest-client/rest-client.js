@@ -1,14 +1,15 @@
 import fetch from 'node-fetch';
-import { getCookie } from '../utils/cookies';
+import { getCookie } from '@supporters/utils/cookies';
 
 export class RestClient {
-  getToken() {
+  getToken = () => {
     return getCookie('token');
-  }
+  };
 
-  createUrl(url) {
-    return `${process.env.REACT_APP_BACKEND_HOST}${url}`;
-  }
+  createUrl = url => {
+    // return `${process.env.REACT_APP_BACKEND_HOST}${url}`;
+    return `http://localhost:5001${url}`;
+  };
 
   createHeaders() {
     return {
@@ -22,8 +23,9 @@ export class RestClient {
       method: 'GET',
       headers: this.createHeaders()
     });
+    const json = await res.text();
 
-    return res.json();
+    return JSON.parse(json);
   }
 
   async asyncPost(url, data) {
@@ -32,7 +34,8 @@ export class RestClient {
       headers: this.createHeaders(),
       body: JSON.stringify(data)
     });
+    const json = await res.text();
 
-    return res.json();
+    return JSON.parse(json);
   }
 }
