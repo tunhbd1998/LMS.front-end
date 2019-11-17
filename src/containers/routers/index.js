@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { get } from 'lodash';
 import App from '@components/app';
 import { getCookie } from '@supporters/utils/cookies';
 import SignIn from '@containers/pages/signin';
@@ -9,10 +10,27 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect
+  Redirect,
 } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import * as authActions from '@supporters/store/redux/actions/auth.actions';
 
-function Routers({ isLoggedIn }) {
+function Routers({ token, actions }) {
+  let isLoggedIn = false;
+
+  if (!token) {
+    const actualToken = getCookie('token');
+    const actualRole = getCookie('role');
+
+    if (actualToken) {
+      isLoggedIn = true;
+      actions.signInSuccess(actualToken, actualRole);
+    }
+  } else {
+    isLoggedIn = true;
+  }
+  // console.log('render', isLoggedIn);
+
   return (
     <Router>
       <Switch>
@@ -40,16 +58,20 @@ function Routers({ isLoggedIn }) {
   );
 }
 
-const mapStateToProps = state => {
-  return {
-    isLoggedIn: !!(
-      (state.authReducer &&
-        state.authReducer.data &&
-        state.authReducer.data.data &&
-        state.authReducer.data.data.token) ||
-      getCookie('token')
-    )
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      signInSuccess: authActions.signInSuccess,
+    },
+    dispatch
+  ),
+});
 
-export default connect(mapStateToProps)(Routers);
+const mapStateToProps = state => ({
+  token: get(state, ['authReducer', 'user', 'token']),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Routers);

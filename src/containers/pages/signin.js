@@ -2,8 +2,9 @@ import React from 'react';
 import { Container, Typography, Grid } from '@material-ui/core';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { H1, Logo, Input, Link, Button } from '@commons/components';
-import { login } from '@supporters/actions';
+import * as authActions from '@supporters/store/redux/actions/auth.actions';
 
 class SignIn extends React.Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class SignIn extends React.Component {
   };
 
   render() {
-    const { history, dLogin } = this.props;
+    const { history, actions } = this.props;
     const { username, password } = this.state;
 
     return (
@@ -46,7 +47,7 @@ class SignIn extends React.Component {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => dLogin(username, password)}
+              onClick={() => actions.signIn(username, password)}
             >
               Đăng nhập
             </Button>
@@ -82,10 +83,18 @@ class SignIn extends React.Component {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    dLogin: (username, password) => dispatch(login(username, password))
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      signIn: authActions.signIn,
+    },
+    dispatch
+  ),
+});
 
-export default withRouter(connect(null, mapDispatchToProps)(SignIn));
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps
+  )(SignIn)
+);

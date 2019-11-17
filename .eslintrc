@@ -8,7 +8,7 @@
   ],
   "plugins": ["babel", "prettier", "module-resolver"],
   "rules": {
-    "module-resolver/use-alias": 2,
+    // "module-resolver/use-alias": 2,
     "react/jsx-filename-extension": [
       1,
       {
@@ -22,6 +22,7 @@
     "react/sort-comp": 0,
     "react/require-default-props": 0,
     "react/forbid-prop-types": 0,
+    "react/jsx-props-no-spreading": 0,
     "no-unused-vars": 0,
     "camelcase": 0,
     "no-undef": 0,
@@ -31,7 +32,9 @@
     "import/prefer-default-export": 0,
     "no-restricted-globals": 0,
     "import/no-unresolved": 0,
-    "import/no-absolute-path": 0
+    "import/no-absolute-path": 0,
+    "module-resolver/use-alias": 0,
+    "consistent-return": 0
   },
   "globals": {
     "window": true,

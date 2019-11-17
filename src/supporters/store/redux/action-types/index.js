@@ -1,0 +1,9 @@
+// auth action types
+export const PROCESSING_AUTH = 'PROCESSING_AUTH';
+export const PROCESSING_AUTH_DONE = 'PROCESSING_AUTH_DONE';
+export const SIGN_IN = 'SIGN_IN';
+export const SIGN_IN_SUCCESS = 'SIGN_IN_SUCCESS';
+export const SIGN_IN_FAILED = 'SIGN_IN_FAILED';
+export const SIGN_UP_MEMBER = 'SIGN_UP_MEMBER';
+export const SIGN_UP_MEMBER_SUCCESS = 'SIGN_UP_MEMBER_SUCCESS';
+export const SIGN_UP_MEMBER_FAILED = 'SIGN_UP_MEMBER_FAILED';

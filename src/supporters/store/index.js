@@ -1,5 +1,11 @@
 import store from './store';
+import { authReducer } from './redux/reducers';
 
 export function getStore() {
-  return store.getInstance();
+  const instance = store.getInstance();
+
+  // inject reducers
+  store.injectReducer('authReducer', authReducer);
+
+  return instance;
 }

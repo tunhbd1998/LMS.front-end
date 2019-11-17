@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { getStore } from '@supporters/store';
 import { ThemeProvider } from '@material-ui/core/styles';
-import theme from '@supporters/themes/global';
+import theme from '@commons/globals/themes/global';
 import Routers from '@containers/routers';
 
 export default function AppContainer() {
