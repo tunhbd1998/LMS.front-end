@@ -1,4 +1,5 @@
 import React from 'react';
+import '@commons/globals/global.styles.css';
 // import logo from '/media/images/logo/logo.svg'
 import './app.styles.scss';
 

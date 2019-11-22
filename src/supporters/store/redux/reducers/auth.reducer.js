@@ -5,12 +5,12 @@ const initStates = {
   user: {
     token: null,
     role: null,
-    profile: null,
+    profile: null
   },
   failedAuth: {
     status: false,
-    message: null,
-  },
+    message: null
+  }
 };
 
 export const authReducer = (state = initStates, { type, payload }) => {
@@ -25,16 +25,24 @@ export const authReducer = (state = initStates, { type, payload }) => {
         user: {
           ...state.user,
           token: payload.token,
-          role: payload.role,
-        },
+          role: payload.role || null
+        }
       };
     case actionTypes.SIGN_IN_FAILED:
       return {
         ...state,
         failedAuth: {
           ...state.failedAuth,
-          message: payload.message,
-        },
+          message: payload.message
+        }
+      };
+    case actionTypes.GET_PROFILE_SUCCESS:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          profile: payload.profile
+        }
       };
     default:
       return { ...state };

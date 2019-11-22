@@ -10,10 +10,11 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect,
+  Redirect
 } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import * as authActions from '@supporters/store/redux/actions/auth.actions';
+import UserPage from '../pages/user-page';
 
 function Routers({ token, actions }) {
   let isLoggedIn = false;
@@ -29,29 +30,21 @@ function Routers({ token, actions }) {
   } else {
     isLoggedIn = true;
   }
-  // console.log('render', isLoggedIn);
-
   return (
     <Router>
       <Switch>
-        <Route path="/" exact>
-          {isLoggedIn ? <App /> : <Redirect to="/sign-in" />}
-        </Route>
         <Route path="/sign-in" exact>
           {!isLoggedIn ? <SignIn /> : <Redirect to="/" />}
         </Route>
-
-        {/* specific */}
-        {!isLoggedIn && (
-          <>
-            <Route path="/sign-up">
-              <SignUp />
-            </Route>
-            <Route path="/sign-up-admin">
-              <SignUpAdmin />
-            </Route>
-          </>
-        )}
+        <Route path="/sign-up" exact>
+          <SignUp />
+        </Route>
+        <Route path="/sign-up-lab" exact>
+          <SignUpAdmin />
+        </Route>
+        <Route path="/">
+          <UserPage />
+        </Route>
         <Route path="*">404 - Not Found!</Route>
       </Switch>
     </Router>
@@ -61,14 +54,14 @@ function Routers({ token, actions }) {
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      signInSuccess: authActions.signInSuccess,
+      signInSuccess: authActions.signInSuccess
     },
     dispatch
-  ),
+  )
 });
 
 const mapStateToProps = state => ({
-  token: get(state, ['authReducer', 'user', 'token']),
+  token: get(state, ['authReducer', 'user', 'token'])
 });
 
 export default connect(
