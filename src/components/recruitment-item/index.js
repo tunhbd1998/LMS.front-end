@@ -1,28 +1,21 @@
 import React from 'react';
-import {
-  makeStyles,
-  useMediaQuery,
-  Card,
-  CardContent
-} from '@material-ui/core';
-import PermIdentityIcon from '@material-ui/icons/PermIdentity';
+import { makeStyles, Card, CardContent } from '@material-ui/core';
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import ScheduleIcon from '@material-ui/icons/Schedule';
-import WorkOutlineIcon from '@material-ui/icons/WorkOutline';
 import { Fade } from 'react-reveal';
 
 const useStyles = makeStyles(theme => ({
   recruitmentItem: {
-    width: useMediaQuery('(max-width: 501px)') ? '100%' : '500px',
+    width: '500px',
     height: '130px',
     boxShadow: '0px 0px 5px 2px rgba(0,0,0,0.2)',
-    margin: '5px',
+    margin: '10px',
     cursor: 'pointer',
     '&:hover': {
       boxShadow: '0px 0px 3px 2px rgba(0,0,0,0.3)'
     },
     padding: '5px',
     boxSizing: 'border-box'
-    // borderRadius: ''
   },
   recruitmentItemContent: {
     display: 'flex',
@@ -84,13 +77,9 @@ export default function RecruitmentItem({ recruitment }) {
               {recruitment.createdDate}
             </span>
             <span className={classes.recruitmentInfoItem}>
-              <WorkOutlineIcon style={{ marginRight: '5px' }} />
+              <LocalLibraryIcon style={{ marginRight: '5px' }} />
               {recruitment.lab.name}
             </span>
-            {/* <span className={classes.recruitmentInfoItem}>
-              <PermIdentityIcon style={{ marginRight: '5px' }} />{' '}
-              {recruitment.members} thành viên
-            </span> */}
           </div>
         </CardContent>
       </Card>

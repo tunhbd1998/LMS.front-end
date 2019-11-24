@@ -1,180 +1,152 @@
+import * as actionTypes from '../action-types';
+
 const initStates = {
+  searchOptions: {
+    province: 'all',
+    university: 'all',
+    specialize: 'all',
+    name: null
+  },
   labs: {
-    totalPage: 1,
-    page: 1,
-    list: [
-      {
-        id: '1',
-        labImage: null,
-        name: 'Robotics',
-        university: 'hcmus',
-        address: {
-          province: 'hcm'
-        },
-        specialize: 'it'
-      },
-      {
-        id: '2',
-        labImage: null,
-        name: 'Hoa hoc',
-        university: 'hcmus',
-        address: {
-          province: 'hcm'
-        },
-        specialize: 'chemistry'
-      },
-      {
-        id: '3',
-        labImage: null,
-        name: 'Vat ly',
-        university: 'hcmus',
-        address: {
-          province: 'hcm'
-        },
-        specialize: 'physics'
-      },
-      {
-        id: '4',
-        labImage: null,
-        name: 'Lab IOT',
-        university: 'hcmus',
-        address: {
-          province: 'hcm'
-        },
-        specialize: 'it'
-      }
-    ]
+    totalPage: null,
+    page: null,
+    list: [],
+    loading: false
   },
   projects: {
-    totalPage: 1,
-    page: 1,
-    list: [
-      {
-        id: '1',
-        name: 'project 01',
-        lab: {
-          name: 'Robotics'
-        },
-        members: 10,
-        createdDate: '2019-11-11'
-      },
-      {
-        id: '2',
-        name: 'project 02',
-        lab: {
-          name: 'Robotics'
-        },
-        members: 10,
-        createdDate: '2019-11-11'
-      },
-      {
-        id: '3',
-        name: 'project 03',
-        lab: {
-          name: 'Robotics'
-        },
-        members: 10,
-        createdDate: '2019-11-11'
-      },
-      {
-        id: '4',
-        name: 'project 04',
-        lab: {
-          name: 'Robotics'
-        },
-        members: 10,
-        createdDate: '2019-11-11'
-      }
-    ]
+    totalPage: null,
+    page: null,
+    list: [],
+    loading: false
   },
   activities: {
-    totalPage: 1,
-    page: 1,
-    list: [
-      {
-        id: '1',
-        name: 'activity 01',
-        address: 'address',
-        lab: {
-          name: 'Robotics'
-        },
-        startTime: '2019-11-11',
-        endTime: '2019-11-12'
-      },
-      {
-        id: '2',
-        name: 'activity 01',
-        address: 'address',
-        lab: {
-          name: 'Robotics'
-        },
-        startTime: '2019-11-11',
-        endTime: '2019-11-12'
-      },
-      {
-        id: '3',
-        name: 'activity 01',
-        address: 'address',
-        lab: {
-          name: 'Robotics'
-        },
-        startTime: '2019-11-11',
-        endTime: '2019-11-12'
-      },
-      {
-        id: '4',
-        name: 'activity 01',
-        address: 'address',
-        lab: {
-          name: 'Robotics'
-        },
-        startTime: '2019-11-11',
-        endTime: '2019-11-12'
-      }
-    ]
+    totalPage: null,
+    page: null,
+    list: [],
+    loading: false
   },
   recruitments: {
-    totalPage: 1,
-    page: 1,
-    list: [
-      {
-        id: '1',
-        position: 'recruitment 01',
-        lab: {
-          name: 'Robotics'
-        },
-        createdDate: '2019-11-11'
-      },
-      {
-        id: '2',
-        position: 'recruitment 01',
-        lab: {
-          name: 'Robotics'
-        },
-        createdDate: '2019-11-11'
-      },
-      {
-        id: '3',
-        position: 'recruitment 01',
-        lab: {
-          name: 'Robotics'
-        },
-        createdDate: '2019-11-11'
-      },
-      {
-        id: '4',
-        position: 'recruitment 01',
-        lab: {
-          name: 'Robotics'
-        },
-        createdDate: '2019-11-11'
-      }
-    ]
+    totalPage: null,
+    page: null,
+    list: [],
+    loading: false
   }
 };
 
 export const mainReducer = (state = initStates, { type, payload }) => {
   switch (type) {
+    case actionTypes.UPDATE_SEARCH_OPTIONS:
+      return {
+        ...state,
+        searchOptions: {
+          ...state.searchOptions,
+          ...payload
+        }
+      };
+    case actionTypes.FETCHING_LABS:
+      return {
+        ...state,
+        labs: {
+          ...state.labs,
+          loading: true
+        }
+      };
+    case actionTypes.FETCHING_LABS_DONE:
+      return {
+        ...state,
+        labs: {
+          ...state.labs,
+          loading: false
+        }
+      };
+    case actionTypes.FETCH_LABS_SUCCESS:
+      return {
+        ...state,
+        labs: {
+          ...state.labs,
+          page: payload.res.page,
+          totalPage: payload.res.totalPage,
+          list: [...state.labs.list, ...payload.res.list]
+        }
+      };
+    case actionTypes.FETCHING_PROJECT_RECRUITMENTS:
+      return {
+        ...state,
+        projects: {
+          ...state.projects,
+          loading: true
+        }
+      };
+    case actionTypes.FETCHING_PROJECT_RECRUITMENTS_DONE:
+      return {
+        ...state,
+        projects: {
+          ...state.projects,
+          loading: false
+        }
+      };
+    case actionTypes.FETCH_PROJECT_RECRUITMENTS_SUCCESS:
+      return {
+        ...state,
+        projects: {
+          ...state.projects,
+          page: payload.res.page,
+          totalPage: payload.res.totalPage,
+          list: payload.res.list
+        }
+      };
+    case actionTypes.FETCHING_ACTIVE_ACTIVITIES:
+      return {
+        ...state,
+        activities: {
+          ...state.activities,
+          loading: true
+        }
+      };
+    case actionTypes.FETCHING_ACTIVE_ACTIVITIES_DONE:
+      return {
+        ...state,
+        activities: {
+          ...state.activities,
+          loading: false
+        }
+      };
+    case actionTypes.FETCH_ACTIVE_ACTIVITIES_SUCCESS:
+      return {
+        ...state,
+        activities: {
+          ...state.activities,
+          page: payload.res.page,
+          totalPage: payload.res.totalPage,
+          list: payload.res.list
+        }
+      };
+    case actionTypes.FETCHING_LAB_RECRUITMENTS:
+      return {
+        ...state,
+        recruitments: {
+          ...state.recruitments,
+          loading: true
+        }
+      };
+    case actionTypes.FETCHING_LAB_RECRUITMENTS_DONE:
+      return {
+        ...state,
+        recruitments: {
+          ...state.recruitments,
+          loading: false
+        }
+      };
+    case actionTypes.FETCH_LAB_RECRUITMENTS_SUCCESS:
+      return {
+        ...state,
+        recruitments: {
+          ...state.recruitments,
+          page: payload.res.page,
+          totalPage: payload.res.totalPage,
+          list: payload.res.list
+        }
+      };
     default:
       return { ...state };
   }

@@ -1,4 +1,4 @@
-export const majors = {
+export const specializes = {
   all: 'Tất cả lĩnh vực',
   it: 'Công nghệ thống tin',
   chemistry: 'Ngành hóa học',

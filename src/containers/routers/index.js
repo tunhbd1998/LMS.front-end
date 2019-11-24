@@ -26,6 +26,7 @@ function Routers({ token, actions }) {
     if (actualToken) {
       isLoggedIn = true;
       actions.signInSuccess(actualToken, actualRole);
+      // actions.getProfile();
     }
   } else {
     isLoggedIn = true;

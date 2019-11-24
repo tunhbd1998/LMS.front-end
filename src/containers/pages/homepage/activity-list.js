@@ -5,18 +5,20 @@ import {
   Button,
   useMediaQuery
 } from '@material-ui/core';
-import { get } from 'lodash';
+import { bindActionCreators } from 'redux';
+import { get, isEmpty } from 'lodash';
 import { connect } from 'react-redux';
 import { styles } from '@commons/globals/common-styles';
 import ActivityItem from '@components/activity-item';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import * as mainActions from '@supporters/store/redux/actions/main.actions';
+import Loading from '@components/loading';
+import * as fetchDataConfigs from '@commons/configs/fetch-data';
 
 const useStyles = makeStyles(theme => ({
   container: {
-    padding: useMediaQuery('(max-width: 576px)')
-      ? '0px 10px'
-      : styles.contentPadding,
+    padding: styles.contentPadding,
     paddingTop: '20px',
     paddingBottom: '20px',
     background: '#E0E0E0'
@@ -33,7 +35,8 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     flexWrap: 'wrap',
-    padding: '0px'
+    padding: '0px',
+    position: 'relative'
   },
   listContainer: {
     display: 'flex',
@@ -63,8 +66,28 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function ActivityList({ activities }) {
+function ActivityList({ activities, actions }) {
   const classes = useStyles();
+
+  React.useEffect(() => {
+    if (!activities.page || !activities.totalPage || isEmpty(activities.list)) {
+      actions.fetchActivities();
+    }
+  });
+
+  const fetchNextPage = () => {
+    actions.fetchActivities(
+      activities.page + (activities.page < activities.totalPage ? 1 : 0),
+      fetchDataConfigs.ACTIVITY_PAGE_SIZE
+    );
+  };
+
+  const fetchPrevPage = () => {
+    actions.fetchActivities(
+      activities.page + (activities.page > 1 ? -1 : 0),
+      fetchDataConfigs.ACTIVITY_PAGE_SIZE
+    );
+  };
 
   return (
     <Container className={classes.container}>
@@ -76,18 +99,26 @@ function ActivityList({ activities }) {
           {activities.list.map(activity => (
             <ActivityItem key={activity.id} activity={activity} />
           ))}
+          {activities.loading ? <Loading /> : null}
         </Container>
-        <Container className={classes.buttons}>
-          <Button className={classes.button} disabled={activities.page === 1}>
-            <ChevronLeftIcon />
-          </Button>
-          <Button
-            className={classes.button}
-            disabled={activities.page === activities.totalPage}
-          >
-            <ChevronRightIcon />
-          </Button>
-        </Container>
+        {activities.totalPage > 1 ? (
+          <Container className={classes.buttons}>
+            <Button
+              className={classes.button}
+              disabled={activities.page === 1}
+              onClick={fetchPrevPage}
+            >
+              <ChevronLeftIcon />
+            </Button>
+            <Button
+              className={classes.button}
+              disabled={activities.page === activities.totalPage}
+              onClick={fetchNextPage}
+            >
+              <ChevronRightIcon />
+            </Button>
+          </Container>
+        ) : null}
       </Container>
     </Container>
   );
@@ -97,7 +128,16 @@ const mapStateToProps = state => ({
   activities: get(state, ['mainReducer', 'activities'])
 });
 
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      fetchActivities: mainActions.fetchActivities
+    },
+    dispatch
+  )
+});
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(ActivityList);

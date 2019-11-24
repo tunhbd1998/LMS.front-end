@@ -1,21 +1,18 @@
 import React from 'react';
-import {
-  makeStyles,
-  Card,
-  CardContent,
-  useMediaQuery
-} from '@material-ui/core';
+import { makeStyles, Card } from '@material-ui/core';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import { majors } from '@commons/data/major';
+import SchoolIcon from '@material-ui/icons/School';
+import WorkIcon from '@material-ui/icons/Work';
+import { specializes } from '@commons/data/specialize';
 import { universities } from '@commons/data/university';
 import Fade from 'react-reveal/Fade';
 
 const useStyles = makeStyles(theme => ({
   labItem: {
-    width: useMediaQuery('(max-width: 501px)') ? '100%' : '500px',
+    width: '500px',
     height: '120px',
     boxShadow: '0px 0px 5px 2px rgba(0,0,0,0.2)',
-    margin: '5px',
+    margin: '10px',
     cursor: 'pointer',
     '&:hover': {
       boxShadow: '0px 0px 3px 2px rgba(0,0,0,0.3)'
@@ -29,7 +26,9 @@ const useStyles = makeStyles(theme => ({
     flexWrap: ' wrap',
     padding: '0px!important',
     width: '100%',
-    height: '100%'
+    height: '100%',
+    color: 'inherit',
+    textDecoration: 'none'
   },
   labImage: {
     width: '100%',
@@ -46,7 +45,10 @@ const useStyles = makeStyles(theme => ({
     padding: '5px'
   },
   labInfoItem: {
-    padding: '2px 0px'
+    padding: '2px 0px',
+    display: 'flex',
+    alignItem: 'center',
+    alignContent: 'center'
   },
   labName: {
     color: '#415764',
@@ -62,7 +64,7 @@ export default function LabItem({ lab }) {
   return (
     <Fade>
       <Card className={classes.labItem}>
-        <CardContent className={classes.labItemContent}>
+        <a href={`/lab/${lab.id}`} className={classes.labItemContent}>
           <div style={{ width: '110px', height: '100%' }}>
             <img
               className={classes.labImage}
@@ -76,14 +78,20 @@ export default function LabItem({ lab }) {
               {lab.name}
             </span>
             <span className={classes.labInfoItem}>
-              {majors[lab.specialize]}
+              <WorkIcon
+                style={{ marginRight: '5px', width: '20px', height: '20px' }}
+              />
+              {specializes[lab.specialize]}
             </span>
             <span className={classes.labInfoItem}>
+              <SchoolIcon
+                style={{ marginRight: '5px', width: '20px', height: '20px' }}
+              />
               {universities[lab.address.province][lab.university]}
             </span>
           </div>
           <FavoriteBorderIcon />
-        </CardContent>
+        </a>
       </Card>
     </Fade>
   );

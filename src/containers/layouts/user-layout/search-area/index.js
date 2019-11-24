@@ -1,4 +1,7 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { keys, omit } from 'lodash';
 import {
   Container,
   Paper,
@@ -7,14 +10,17 @@ import {
   Grid,
   Select,
   MenuItem,
-  makeStyles,
-  useMediaQuery
+  makeStyles
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import { keys, omit } from 'lodash';
 import { provinces } from '@commons/data/province';
-import { majors } from '@commons/data/major';
+import { specializes } from '@commons/data/specialize';
 import { universities } from '@commons/data/university';
+import {
+  fetchLabs as fetchLabsAction,
+  updateSearchOptions as updateSearchOptionsAction
+} from '@supporters/store/redux/actions/main.actions';
+import * as fetchDataConfigs from '@commons/configs/fetch-data';
 
 const useStyles = makeStyles(theme => ({
   searchArea: {
@@ -29,9 +35,7 @@ const useStyles = makeStyles(theme => ({
     color: '#415764'
   },
   searchAreaContent: {
-    // width: useMediaQuery('(max-width: 738px)') ? '95%' : '738px',
     maxWidth: '738px',
-    // width: '738px',
     height: 'auto'
   },
   bannerTitle: {
@@ -73,22 +77,66 @@ const filterUniversities = provinceId => {
   return filteredUniversities;
 };
 
-export default function SearchArea() {
+function SearchArea({ actions }) {
   const classes = useStyles();
   const [selectedProvince, setProvince] = React.useState(keys(provinces)[0]);
   let filteredUniversities = filterUniversities(selectedProvince);
-  const [selectedMajor, setMajor] = React.useState(keys(majors)[0]);
+  const [selectedSpecialize, setSpecialize] = React.useState(
+    keys(specializes)[0]
+  );
   const [selectedUniversity, setUniversity] = React.useState(
     keys(universities)[0]
   );
+  const [name, setName] = React.useState('');
 
-  const handleChangeMajor = event => setMajor(event.target.value);
+  const fetchLabs = () => {
+    actions.fetchLabs({
+      name,
+      university: selectedUniversity,
+      specialize: selectedSpecialize,
+      province: selectedProvince,
+      page: 1,
+      pageSize: fetchDataConfigs.LAB_PAGE_SIZE
+    });
+  };
 
-  const handleChangeUniversity = event => setUniversity(event.target.value);
+  const updateSearchOptions = () => {
+    actions.updateSearchOptions({
+      university: selectedUniversity,
+      province: selectedProvince,
+      specialize: selectedSpecialize,
+      name
+    });
+  };
+
+  const handleChangeSpecialize = event => {
+    setSpecialize(event.target.value);
+
+    updateSearchOptions();
+    fetchLabs();
+  };
+
+  const handleChangeUniversity = event => {
+    setUniversity(event.target.value);
+
+    updateSearchOptions();
+    fetchLabs();
+  };
 
   const handleChangeProvince = event => {
     setProvince(event.target.value);
     filteredUniversities = filterUniversities(selectedProvince);
+    setUniversity('all');
+
+    updateSearchOptions();
+    fetchLabs();
+  };
+
+  const handleChangeName = event => {
+    setName(event.target.value);
+
+    updateSearchOptions();
+    fetchLabs();
   };
 
   return (
@@ -111,6 +159,8 @@ export default function SearchArea() {
             <InputBase
               style={{ width: '90%' }}
               placeholder="Tìm kiếm lab"
+              defaultValue={name}
+              onChange={handleChangeName}
               inputProps={{ 'aria-label': 'Tìm kiếm lab' }}
             />
             <IconButton type="submit" aria-label="search">
@@ -154,15 +204,15 @@ export default function SearchArea() {
             </Grid>
             <Grid item xs={4}>
               <Select
-                labelId="major"
+                labelId="specialize"
                 id=""
-                value={selectedMajor}
+                value={selectedSpecialize}
                 className={classes.selection}
-                onChange={handleChangeMajor}
+                onChange={handleChangeSpecialize}
               >
-                {keys(majors).map(id => (
+                {keys(specializes).map(id => (
                   <MenuItem key={id} value={id}>
-                    {majors[id]}
+                    {specializes[id]}
                   </MenuItem>
                 ))}
               </Select>
@@ -173,3 +223,20 @@ export default function SearchArea() {
     </Container>
   );
 }
+
+// const mapStateToProps = state => ({});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      fetchLabs: fetchLabsAction,
+      updateSearchOptions: updateSearchOptionsAction
+    },
+    dispatch
+  )
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(SearchArea);

@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  makeStyles,
-  useMediaQuery,
-  Card,
-  CardContent
-} from '@material-ui/core';
-import PermIdentityIcon from '@material-ui/icons/PermIdentity';
+import { makeStyles, Card, CardContent } from '@material-ui/core';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import WorkOutlineIcon from '@material-ui/icons/WorkOutline';
 import RoomIcon from '@material-ui/icons/Room';
@@ -13,10 +7,10 @@ import { Fade } from 'react-reveal';
 
 const useStyles = makeStyles(theme => ({
   activityItem: {
-    width: useMediaQuery('(max-width: 501px)') ? '100%' : '500px',
+    width: '500px',
     height: '130px',
     boxShadow: '0px 0px 5px 2px rgba(0,0,0,0.2)',
-    margin: '5px',
+    margin: '10px',
     cursor: 'pointer',
     '&:hover': {
       boxShadow: '0px 0px 3px 2px rgba(0,0,0,0.3)'

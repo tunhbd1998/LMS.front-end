@@ -5,7 +5,7 @@ import Homepage from './homepage';
 
 export default function UserPage() {
   return (
-    <UserLayout>
+    <UserLayout onScroll={event => console.log('event', event)}>
       <Router>
         <Switch>
           <Route path="/" exact>

@@ -2,19 +2,6 @@ import { RestClient } from '@supporters/rest-client/rest-client';
 import { updateCookie } from '@supporters/utils/cookies';
 import * as actionTypes from '../action-types';
 
-// action types
-export const SIGNIN = {
-  IS_SIGNING_IN: 'IS_SIGNING_IN',
-  SIGNIN_SUCCESSFULLY: 'SIGNIN_SUCCESSFULLY'
-};
-
-// actions
-// export function isLoggingIn() {
-//   return {
-//     type: SIGNIN.IS_SIGNING_IN
-//   };
-// }
-
 export const processingAuth = () => ({
   type: actionTypes.PROCESSING_AUTH,
   payload: {}

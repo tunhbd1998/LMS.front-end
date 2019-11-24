@@ -13,9 +13,6 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: styles.contentPadding
-    // padding: useMediaQuery('(max-width: 576px)')
-    //   ? '0px 10px'
-    //   : styles.contentPadding
   },
   logo: {
     width: '45px',

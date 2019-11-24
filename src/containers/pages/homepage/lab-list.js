@@ -1,15 +1,13 @@
 import React from 'react';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { connect } from 'react-redux';
-import {
-  Container,
-  Button,
-  makeStyles,
-  useMediaQuery,
-  CircularProgress
-} from '@material-ui/core';
+import { bindActionCreators } from 'redux';
+import { Container, Button, makeStyles } from '@material-ui/core';
 import LabItem from '@components/lab-item';
 import { styles } from '@commons/globals/common-styles';
+import * as mainActions from '@supporters/store/redux/actions/main.actions';
+import Loading from '@components/loading';
+import * as fetchDataConfigs from '@commons/configs/fetch-data';
 
 const useStyles = makeStyles(theme => ({
   loadMoreButton: {
@@ -30,21 +28,32 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     flexWrap: 'wrap',
-    padding: '0px'
+    padding: '0px',
+    position: 'relative'
   }
 }));
 
-function LabList({ labs }) {
+function LabList({ labs, token, actions, searchOptions }) {
   const classes = useStyles();
 
-  const loadMoreLabs = () => {};
+  React.useEffect(() => {
+    if (!labs.totalPage || !labs.page || isEmpty(labs.list)) {
+      actions.fetchLabs({});
+    }
+  });
+
+  const loadMoreLabs = () => {
+    actions.fetchLabs({
+      ...searchOptions,
+      page: labs.page + 1,
+      pageSize: fetchDataConfigs.LAB_PAGE_SIZE
+    });
+  };
 
   return (
     <Container
       style={{
-        padding: useMediaQuery('(max-width: 576px)')
-          ? '0px 10px'
-          : styles.contentPadding,
+        padding: styles.contentPadding,
         paddingTop: '20px',
         paddingBottom: '20px',
         background: '#E0E0E0'
@@ -59,7 +68,7 @@ function LabList({ labs }) {
           color: styles.mainTextColor
         }}
       >
-        Cac lab
+        {token ? 'Các lab cùng trường với bạn' : 'Các lab'}
       </span>
       <Container
         style={{
@@ -73,21 +82,34 @@ function LabList({ labs }) {
           {labs.list.map(lab => (
             <LabItem key={lab.id} lab={lab} />
           ))}
-          {labs.length === 0 ? <CircularProgress /> : null}
+          {labs.loading ? <Loading /> : null}
         </Container>
-        <Button className={classes.loadMoreButton} onClick={loadMoreLabs}>
-          Xem thêm
-        </Button>
+        {labs.page && labs.totalPage && labs.page < labs.totalPage ? (
+          <Button className={classes.loadMoreButton} onClick={loadMoreLabs}>
+            Xem thêm
+          </Button>
+        ) : null}
       </Container>
     </Container>
   );
 }
 
 const mapStateToProps = state => ({
-  labs: get(state, ['mainReducer', 'labs'])
+  token: get(state, ['authReducer', 'user', 'token']),
+  labs: get(state, ['mainReducer', 'labs']),
+  searchOptions: get(state, ['mainReducer', 'searchOptions'])
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      fetchLabs: mainActions.fetchLabs
+    },
+    dispatch
+  )
 });
 
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(LabList);

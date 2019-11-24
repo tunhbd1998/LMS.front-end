@@ -1,22 +1,19 @@
 import React from 'react';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { connect } from 'react-redux';
-import {
-  Container,
-  Button,
-  useMediaQuery,
-  makeStyles
-} from '@material-ui/core';
+import { Container, Button, makeStyles } from '@material-ui/core';
+import { bindActionCreators } from 'redux';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import RecruitmentItem from '@components/recruitment-item';
 import { styles } from '@commons/globals/common-styles';
+import * as mainActions from '@supporters/store/redux/actions/main.actions';
+import Loading from '@components/loading';
+import * as fetchDataConfigs from '@commons/configs/fetch-data';
 
 const useStyles = makeStyles(theme => ({
   container: {
-    padding: useMediaQuery('(max-width: 576px)')
-      ? '0px 10px'
-      : styles.contentPadding,
+    padding: styles.contentPadding,
     paddingTop: '20px',
     paddingBottom: '20px',
     background: 'url("/media/images/banner/banner-two.png")',
@@ -41,7 +38,8 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     flexWrap: 'wrap',
-    padding: '0px'
+    padding: '0px',
+    position: 'relative'
   },
   buttons: {
     width: '100%',
@@ -65,8 +63,32 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function RecruitmentList({ recruitments }) {
+function RecruitmentList({ recruitments, actions }) {
   const classes = useStyles();
+
+  React.useEffect(() => {
+    if (
+      !recruitments.page ||
+      !recruitments.totalPage ||
+      isEmpty(recruitments.list)
+    ) {
+      actions.fetchLabRecruitments();
+    }
+  });
+
+  const fetchNextPage = () => {
+    actions.fetchLabRecruitments(
+      recruitments.page + (recruitments.page < recruitments.totalPage ? 1 : 0),
+      fetchDataConfigs.LAB_RECRUITMENT_PAGE_SIZE
+    );
+  };
+
+  const fetchPrevPage = () => {
+    actions.fetchLabRecruitments(
+      recruitments.page + (recruitments.page > 1 ? -1 : 0),
+      fetchDataConfigs.LAB_RECRUITMENT_PAGE_SIZE
+    );
+  };
 
   return (
     <Container className={classes.container}>
@@ -76,18 +98,26 @@ function RecruitmentList({ recruitments }) {
           {recruitments.list.map(recruitment => (
             <RecruitmentItem key={recruitment.id} recruitment={recruitment} />
           ))}
+          {recruitments.loading ? <Loading /> : null}
         </Container>
-        <Container className={classes.buttons}>
-          <Button className={classes.button} disabled={recruitments.page === 1}>
-            <ChevronLeftIcon />
-          </Button>
-          <Button
-            className={classes.button}
-            disabled={recruitments.page === recruitments.totalPage}
-          >
-            <ChevronRightIcon />
-          </Button>
-        </Container>
+        {recruitments.totalPage > 1 ? (
+          <Container className={classes.buttons}>
+            <Button
+              className={classes.button}
+              disabled={recruitments.page === 1}
+              onClick={fetchPrevPage}
+            >
+              <ChevronLeftIcon />
+            </Button>
+            <Button
+              className={classes.button}
+              disabled={recruitments.page === recruitments.totalPage}
+              onClick={fetchNextPage}
+            >
+              <ChevronRightIcon />
+            </Button>
+          </Container>
+        ) : null}
       </Container>
     </Container>
   );
@@ -97,7 +127,16 @@ const mapStateToProps = state => ({
   recruitments: get(state, ['mainReducer', 'recruitments'])
 });
 
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      fetchLabRecruitments: mainActions.fetchLabRecruitments
+    },
+    dispatch
+  )
+});
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(RecruitmentList);
