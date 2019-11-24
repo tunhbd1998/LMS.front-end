@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import { keys } from 'lodash';
 import { getCookie } from '@supporters/utils/cookies';
 
 export class RestClient {
@@ -18,8 +19,19 @@ export class RestClient {
     };
   }
 
-  async asyncGet(url) {
-    const res = await fetch(this.createUrl(url), {
+  async asyncGet(url, query = null) {
+    let queryString = '?';
+
+    if (query) {
+      keys(query).forEach((field, index) => {
+        if (index === 0) {
+          queryString += `${field}=${query[field]}`;
+        } else {
+          queryString += `&${field}=${query[field]}`;
+        }
+      });
+    }
+    const res = await fetch(this.createUrl(url + queryString), {
       method: 'GET',
       headers: this.createHeaders()
     });
