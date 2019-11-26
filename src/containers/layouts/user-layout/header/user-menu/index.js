@@ -23,6 +23,8 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import * as authActions from '@supporters/store/redux/actions/auth.actions';
 import { disableLink } from '@supporters/utils/link';
+import Profile from '../../modal-profile/index'
+
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -101,7 +103,7 @@ function UserMenu({ user, actions }) {
           <Avatar
             alt="Remy Sharp"
             className={classes.avatar}
-            src={get(user, ['profile', 'avatar']) || AVATAR_DEFAUL}
+            src={get(user, ['profile', 'avatarImage']) || AVATAR_DEFAUL}
           />
           <div className={classes.userInfo} style={{}}>
             <span>{get(user, ['profile', 'fullname']) || 'Your name'}</span>
@@ -138,7 +140,8 @@ function UserMenu({ user, actions }) {
             }}
           >
             <Paper>
-              <ClickAwayListener onClickAway={handleCloseUserMenu}>
+              {/* disable onClickAway={handleCloseUserMenu} */}
+              <ClickAwayListener >
                 <MenuList
                   autoFocusItem={isOpenUserMenu}
                   id="menu-list-grow"
@@ -146,17 +149,11 @@ function UserMenu({ user, actions }) {
                   style={{ padding: '10px 0px' }}
                 >
                   {user.token ? (
-                    <>
-                      <MenuItem onClick={handleCloseUserMenu}>
-                        <a
-                          href="/"
-                          onClick={disableLink}
-                          className={classes.subMenuLink}
-                        >
-                          <AssignmentIndIcon className={classes.spacingOne} />
-                          Thông tin cá nhân
-                        </a>
+                    <div>
+                      <MenuItem>
+                        <Profile profile = {get(user,['profile'])} />
                       </MenuItem>
+
                       <MenuItem onClick={handleCloseUserMenu}>
                         <a
                           href="/favorite-labs"
@@ -167,7 +164,7 @@ function UserMenu({ user, actions }) {
                         </a>
                       </MenuItem>
                       <MenuItem onClick={handleCloseUserMenu}>
-                        <a href="/" className={classes.subMenuLink}>
+                        <a href="javascript:void(0)" className={classes.subMenuLink}>
                           <WorkIcon className={classes.spacingOne} />
                           Các lab đã tham gia
                         </a>
@@ -182,9 +179,9 @@ function UserMenu({ user, actions }) {
                           Đăng xuất
                         </a>
                       </MenuItem>
-                    </>
+                    </div>
                   ) : (
-                    <>
+                    <div>
                       <MenuItem onClick={handleCloseUserMenu}>
                         <a href="sign-up" className={classes.subMenuLink}>
                           <PermIdentityIcon className={classes.spacingOne} />
@@ -197,7 +194,7 @@ function UserMenu({ user, actions }) {
                           Lab
                         </a>
                       </MenuItem>
-                    </>
+                    </div>
                   )}
                 </MenuList>
               </ClickAwayListener>

@@ -15,6 +15,20 @@ const initStates = {
 
 export const authReducer = (state = initStates, { type, payload }) => {
   switch (type) {
+    case actionTypes.UPLOAD_AVATAR:
+      return {...state}
+    case actionTypes.UPLOAD_AVATAR_SUCCESS:
+      return {
+        ...state,
+        user : {
+          ...state.user,
+          profile: payload.profile.data
+        }
+      }
+    case actionTypes.UPLOAD_AVATAR_FAIL:
+      return {
+        ...state
+      }
     case actionTypes.PROCESSING_AUTH:
       return { ...state, isProcessingAuth: true };
     case actionTypes.PROCESSING_AUTH_DONE:
