@@ -1,55 +1,26 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import App from '@components/app';
-import { getCookie } from '@supporters/utils/cookies';
-import SignIn from '@containers/pages/signin';
-import SignUp from '@containers/pages/signup';
-import SignUpAdmin from '@containers/pages/signup-admin';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect
-} from 'react-router-dom';
+import SignIn from '@containers/pages/sign-in';
+import SignUp from '@containers/pages/sign-up';
+import SignUpAdmin from '@containers/pages/sign-up-admin';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { injectAuth } from '@supporters/hoc';
 
-function Routers({ isLoggedIn }) {
+function Routers() {
   return (
     <Router>
       <Switch>
-        <Route path="/" exact>
-          {isLoggedIn ? <App /> : <Redirect to="/sign-in" />}
-        </Route>
-        <Route path="/sign-in" exact>
-          {!isLoggedIn ? <SignIn /> : <Redirect to="/" />}
-        </Route>
-
-        {/* specific */}
-        {!isLoggedIn && (
-          <>
-            <Route path="/sign-up">
-              <SignUp />
-            </Route>
-            <Route path="/sign-up-admin">
-              <SignUpAdmin />
-            </Route>
-          </>
-        )}
+        <Route path="/sign-in" component={injectAuth(SignIn, true)} />
+        <Route path="/sign-up" component={injectAuth(SignUp, true)} />
+        <Route
+          path="/sign-up-admin"
+          component={injectAuth(SignUpAdmin, true)}
+        />
+        <Route path="/" component={injectAuth(App)} />
         <Route path="*">404 - Not Found!</Route>
       </Switch>
     </Router>
   );
 }
 
-const mapStateToProps = state => {
-  return {
-    isLoggedIn: !!(
-      (state.authReducer &&
-        state.authReducer.data &&
-        state.authReducer.data.data &&
-        state.authReducer.data.data.token) ||
-      getCookie('token')
-    )
-  };
-};
-
-export default connect(mapStateToProps)(Routers);
+export default Routers;

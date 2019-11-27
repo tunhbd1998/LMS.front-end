@@ -1,10 +1,21 @@
 import React from 'react';
 import { Container, Typography, Grid } from '@material-ui/core';
 import { withRouter } from 'react-router';
-import { RestClient } from '@supporters/rest-client/rest-client';
+import { connect } from 'react-redux';
 
-import { H1, Logo, Input, Title, Button, Dropdown } from '@commons/components';
-import { gender, dropdownData } from '@supporters/mock';
+import genders from '@supporters/const/genders';
+import {
+  H1,
+  Logo,
+  Input,
+  Title,
+  Button,
+  Dropdown,
+  Snackbar
+} from '@commons/components';
+import { dropdownData } from '@supporters/mock';
+import moment from 'moment';
+import { signUp } from '@supporters/actions';
 
 class SignUpAdmin extends React.Component {
   constructor(props) {
@@ -12,16 +23,21 @@ class SignUpAdmin extends React.Component {
     this.state = {
       username: '',
       password: '',
-      birthday: '',
+      birthday: moment().format('YYYY-MM-DD'),
       fullname: '',
       IDNumber: '',
       IDCardNumber: '',
       phone: '',
       email: '',
-      university: '',
-      lab_name: '',
-      lab_university: '',
-      lab_address: ''
+      university: 1,
+      gender: 1,
+      job: '',
+
+      // lab
+      labName: '',
+      labUniversity: 1,
+      labAddress: '',
+      labSpecialize: 1
     };
   }
 
@@ -29,50 +45,8 @@ class SignUpAdmin extends React.Component {
     this.setState({ [field]: e.target.value });
   };
 
-  signUp = () => {
-    const {
-      username,
-      password,
-      birthday,
-      fullname,
-      IDNumber,
-      IDCardNumber,
-      phone,
-      email,
-      university,
-      lab_name,
-      lab_university,
-      lab_address
-    } = this.state;
-
-    new RestClient()
-      .asyncPost('/users/sign-up-lab', {
-        user: {
-          username,
-          password,
-          birthday,
-          fullname,
-          IDNumber,
-          IDCardNumber,
-          phone,
-          email,
-          university
-        },
-        lab: {
-          name: lab_name,
-          university: lab_university,
-          address: lab_address
-        }
-      })
-      .then(response => {
-        if (response.data && response.data.data.status === true) {
-          //  ok
-        }
-      });
-  };
-
   render() {
-    const { history } = this.props;
+    const { history, rSignUp, rResponse, rIsSigningUp } = this.props;
     const {
       username,
       password,
@@ -83,9 +57,13 @@ class SignUpAdmin extends React.Component {
       phone,
       email,
       university,
-      lab_name,
-      lab_university,
-      lab_address
+      gender,
+      job,
+
+      labName,
+      labUniversity,
+      labAddress,
+      labSpecialize
     } = this.state;
 
     return (
@@ -99,16 +77,16 @@ class SignUpAdmin extends React.Component {
             <Input
               label="Tên lab"
               id="i1"
-              value={lab_name}
-              handleChange={this.changeState('lab_name')}
+              value={labName}
+              handleChange={this.changeState('labName')}
             />
           </Grid>
           <Grid item xs={12}>
             <Input
               label="Địa chỉ lab"
               id="i2"
-              value={lab_address}
-              handleChange={this.changeState('lab_address')}
+              value={labAddress}
+              handleChange={this.changeState('labAddress')}
             />
           </Grid>
           <Grid item xs={6}>
@@ -116,16 +94,22 @@ class SignUpAdmin extends React.Component {
               label="Trực thuộc"
               id="i3"
               data={dropdownData}
-              value={lab_university}
-              handleChange={this.changeState('lab_university')}
+              value={labUniversity}
+              onChange={this.changeState('labUniversity')}
             />
           </Grid>
           <Grid item xs={6}>
-            <Dropdown label="Lĩnh vực" id="i4" value={1} data={dropdownData} />
+            <Dropdown
+              label="Lĩnh vực"
+              id="i4"
+              value={labSpecialize}
+              onChange={this.changeState('labSpecialize')}
+              data={dropdownData}
+            />
           </Grid>
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <Input label="Giấy chứng nhận hoạt động" id="i5" />
-          </Grid>
+          </Grid> */}
         </Grid>
 
         <Title>Thông tin cá nhân</Title>
@@ -156,7 +140,23 @@ class SignUpAdmin extends React.Component {
             />
           </Grid>
           <Grid item xs={3}>
-            <Dropdown label="Giới tính" id="i7" value="male" data={gender} />
+            <Dropdown
+              label="Giới tính"
+              id="i7"
+              value={gender}
+              onChange={this.changeState('gender')}
+              data={genders}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Input
+              label="Ngày sinh"
+              id="i9"
+              type="date"
+              value={birthday}
+              handleChange={this.changeState('birthday')}
+            />
           </Grid>
           <Grid item xs={6}>
             <Input
@@ -168,11 +168,10 @@ class SignUpAdmin extends React.Component {
           </Grid>
           <Grid item xs={6}>
             <Input
-              label="Ngày sinh"
-              id="i9"
-              type="date"
-              value={birthday}
-              handleChange={this.changeState('birthday')}
+              label="Số thẻ sinh viên"
+              id="i8"
+              value={IDCardNumber}
+              handleChange={this.changeState('IDCardNumber')}
             />
           </Grid>
           <Grid item xs={12}>
@@ -192,7 +191,12 @@ class SignUpAdmin extends React.Component {
             />
           </Grid>
           <Grid item xs={6}>
-            <Input label="Chức vụ" id="i12" />
+            <Input
+              label="Chức vụ"
+              id="i12"
+              value={job}
+              handleChange={this.changeState('job')}
+            />
           </Grid>
           <Grid item xs={6}>
             <Dropdown
@@ -200,12 +204,39 @@ class SignUpAdmin extends React.Component {
               id="i13"
               data={dropdownData}
               value={university}
-              handleChange={this.changeState('university')}
+              onChange={this.changeState('university')}
             />
           </Grid>
 
           <Grid item xs={12}>
-            <Button variant="contained" color="primary" onClick={this.signUp}>
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={rIsSigningUp}
+              onClick={() =>
+                rSignUp({
+                  user: {
+                    username,
+                    password,
+                    birthday,
+                    fullname,
+                    IDNumber,
+                    IDCardNumber,
+                    phone,
+                    email,
+                    university,
+                    gender,
+                    job
+                  },
+                  lab: {
+                    name: labName,
+                    university: labUniversity,
+                    address: labAddress,
+                    specialize: labSpecialize
+                  }
+                })
+              }
+            >
               Đăng ký
             </Button>
           </Grid>
@@ -229,9 +260,21 @@ class SignUpAdmin extends React.Component {
             </Button>
           </Grid>
         </Grid>
+
+        {rResponse && (
+          <Snackbar open handleClose={() => {}} message={rResponse} />
+        )}
       </Container>
     );
   }
 }
 
-export default withRouter(SignUpAdmin);
+export default withRouter(
+  connect(
+    state => ({
+      rResponse: state.signUp.response,
+      rIsSigningUp: state.signUp.isSigningUp
+    }),
+    { rSignUp: signUp }
+  )(SignUpAdmin)
+);

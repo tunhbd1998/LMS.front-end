@@ -1,13 +1,15 @@
 import { SIGNIN } from '@supporters/actions';
 
-const initStates = { isSigningIn: '', data: {} };
+const initStates = { isSigningIn: false, data: {}, error: '' };
 
-export const authReducer = (state = initStates, { type, payload }) => {
+export const auth = (state = initStates, { type, ...payload }) => {
   switch (type) {
     case SIGNIN.IS_SIGNING_IN:
-      return { ...state };
+      return { ...state, isSigningIn: payload.value };
+    case SIGNIN.SIGNIN_MESSAGE:
+      return { ...state, error: payload.message };
     case SIGNIN.SIGNIN_SUCCESSFULLY:
-      return { ...state, data: payload };
+      return { ...state, data: payload.payload };
     default:
       return { ...state };
   }

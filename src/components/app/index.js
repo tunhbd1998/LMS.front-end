@@ -1,10 +1,25 @@
 import React from 'react';
-// import logo from '/media/images/logo/logo.svg'
+import { Button } from '@material-ui/core';
+import { signOut } from '@supporters/actions';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import './app.styles.scss';
 
-function App() {
+function App({ rSignOut, history }) {
   return (
     <div className="App">
+      <div style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+        <Button
+          variant="text"
+          color="secondary"
+          onClick={() => {
+            rSignOut();
+            history.push('/sign-in');
+          }}
+        >
+          Đăng xuất
+        </Button>
+      </div>
       <header className="App-header">
         <img
           src="/media/images/logo/logo.svg"
@@ -27,4 +42,4 @@ function App() {
   );
 }
 
-export default App;
+export default withRouter(connect(null, { rSignOut: signOut })(App));
