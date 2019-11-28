@@ -151,7 +151,7 @@ function UserMenu({ user, actions }) {
                   {user.token ? (
                     <div>
                       <MenuItem>
-                        <Profile profile = {get(user,['profile'])} />
+                        <Profile profile = {get(user,['profile'])} editMode = {get(user,['editMode'])} />
                       </MenuItem>
 
                       <MenuItem onClick={handleCloseUserMenu}>
@@ -213,7 +213,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      getProfile: authActions.getProfile
+      getProfile: authActions.getProfile,
     },
     dispatch
   )

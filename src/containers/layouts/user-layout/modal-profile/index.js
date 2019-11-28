@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -6,29 +5,53 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import CloseIcon from '@material-ui/icons/Close';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
-import { disableLink } from '@supporters/utils/link';
 import Avatar from '@material-ui/core/Avatar';
 import * as authActions from '@supporters/store/redux/actions/auth.actions';
 import {get} from 'lodash'
-
+import GeneralProfile from './generalProfile'
+import ProfileTabs from './tabProfile'
 
 const useStyles = makeStyles(theme => ({
   modal: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+
   },
-  avatar: {
-    width: 150,
-    height:150
+  button: {
+    backgroundColor: '#109CF1',
+    color:"white",
+    padding: '5px 10px',
+    marginBottom:10,
+    '&:hover': {
+        boxShadow:'0px 4px 10px rgba(16, 156, 241, 0.24)',
+        backgroundColor: '#109CF1',
+        color:"white",
+    }
+  },  
+  close : {
+    color: '#109CF1',
+    position:'absolute',
+    top:10,
+    right:10,
+    fontSize:'2rem',
+    '&:hover':{
+      cursor:'pointer'
+    }
   },
   paper: {
-    backgroundColor: theme.palette.background.paper,
-    minHeight:600,
+    backgroundColor: '#F5F6F8',
+    minHeight:650,
+    maxHeight:690,
     minWidth:1200,
-    
+    maxWidth:1200,
+    position:'relative',
+    display:'flex',
   },
   spacingOne: {
     marginRight: 2
@@ -41,10 +64,13 @@ const useStyles = makeStyles(theme => ({
     color: '#415764',
     padding: '0px 20px'
   },
+  centerSelf: {
+    alignSelf:'center'
+  }
 }));
 
-function Profile({profile, actions}) {
-  const AVATAR_DEFAUL = '/media/images/logo/avatar-default.png';
+function Profile({profile, actions,editMode}) {
+
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   console.log(actions);
@@ -55,17 +81,6 @@ function Profile({profile, actions}) {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const handleChangeInputImage = (e) => {
-    const fileUpload = e.target.files[0];
-    const formData = new FormData();
-    console.log('actions',actions);
-
-    formData.append('avatar',fileUpload);
-
-    actions.uploadAvatar(formData);
-  }
-
   return (
     <div>
       <a
@@ -90,25 +105,16 @@ function Profile({profile, actions}) {
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <Avatar
-              alt="test"
-              className={classes.avatar}
-              src={get(profile, ['avatarImage']) || AVATAR_DEFAUL}
-            />
-            <label htmlFor="raised-button-file">
-                <input
-                accept="image/*"
-                className={classes.input}
-                style={{ display: 'none' }}
-                id="raised-button-file"
-                onChange = {handleChangeInputImage}
-                
-                type="file"
-                />
-                <Button variant="raised" component="span" className={classes.button}>
-                    Upload
-                </Button>
-            </label> 
+            <Grid container direction="row" justify="center">
+            <CloseIcon onClick ={handleClose} className={classes.close} />
+              <Grid item xs={3} className = {classes.centerSelf}>
+                <GeneralProfile profile = {profile} actions = {actions} />
+              </Grid>
+              <Grid item xs={9} className = {classes.centerSelf}>
+                <ProfileTabs profile = {profile} actions = {actions} editMode = {editMode}/>
+              </Grid>
+            </Grid>
+            <Button style={{position: 'absolute',bottom:'0',left:'50%',transform:'translateX(-50%)' }} className={classes.button} onClick={handleClose}>ĐÓNG</Button> 
           </div>
         </Fade>
       </Modal>
@@ -123,7 +129,9 @@ function Profile({profile, actions}) {
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      uploadAvatar: authActions.uploadAvatar
+      uploadAvatar: authActions.uploadAvatar,
+      modeEditOn: authActions.modeEditOn,
+      modeEditOff: authActions.modeEditOff,
     },
     dispatch
   )

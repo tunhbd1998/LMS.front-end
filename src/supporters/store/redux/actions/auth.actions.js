@@ -81,7 +81,7 @@ export const getProfile = () => dispatch => {
         dispatch(getProfileSuccess(get(res.data,['profile'])))
       }
       else {
-        dispatch(getProfileFaile(res.error.message))
+        dispatch(getProfileFail(res.error.message))
       }
     })
 };
@@ -120,4 +120,26 @@ export const uploadAvatar = (formData) =>
           dispatch(uploadAvatarFail(res.error))
       })
     }
+}
+
+export const modeEditProfileOn = () => ({
+  type: actionTypes.MODE_EDIT_PROFILE_ON,
+  payload:{}
+})
+
+export const modeEditProfileDone = () =>({
+  type:actionTypes.MODE_EDIT_PROFILE_DONE,
+  payload:{}
+})
+
+export const modeEditOn = () => {
+  return dispatch => {
+    dispatch(modeEditProfileOn())
+  }
+}
+
+export const modeEditOff = () => {
+  return dispatch => {
+    dispatch(modeEditProfileDone())
+  }
 }
