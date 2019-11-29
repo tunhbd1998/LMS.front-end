@@ -2,8 +2,8 @@ import React from 'react';
 import { Container, Typography, Grid } from '@material-ui/core';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import { H1, Logo, Input, Link, Button, Snackbar } from '@commons/components';
-import { signIn, clearSignInMessage } from '@supporters/store/redux/actions';
+import { H1, Logo, Input, Link, Button } from '@commons/components';
+import { signIn } from '@supporters/store/redux/actions';
 
 class SignIn extends React.Component {
   constructor(props) {
@@ -26,7 +26,7 @@ class SignIn extends React.Component {
   };
 
   render() {
-    const { history, rMessage, rIsSigningIn, rClearMessage } = this.props;
+    const { history, rFailedAuth, rIsProcessingAuth } = this.props;
     const { username, password } = this.state;
 
     return (
@@ -54,10 +54,18 @@ class SignIn extends React.Component {
             </Grid>
 
             <Grid item xs={12}>
+              {rFailedAuth && rFailedAuth.message && (
+                <Typography gutterBottom align="center" color="secondary">
+                  {rFailedAuth.message === 'Your account is incorrect'
+                    ? 'Thông tin đăng nhập không chính xác'
+                    : rFailedAuth.message}
+                </Typography>
+              )}
+
               <Button
                 variant="contained"
                 color="primary"
-                disabled={rIsSigningIn}
+                disabled={rIsProcessingAuth}
                 onClick={this.submit}
                 type="submit"
               >
@@ -91,9 +99,6 @@ class SignIn extends React.Component {
             </Grid>
           </Grid>
         </form>
-        {rMessage && (
-          <Snackbar open handleClose={rClearMessage} message={rMessage} />
-        )}
       </Container>
     );
   }
@@ -102,9 +107,9 @@ class SignIn extends React.Component {
 export default withRouter(
   connect(
     state => ({
-      rMessage: state.authReducer.error,
-      rIsSigningIn: state.authReducer.isSigningIn
+      rFailedAuth: state.authReducer.failedAuth,
+      rIsProcessingAuth: state.authReducer.isProcessingAuth
     }),
-    { rSignIn: signIn, rClearMessage: clearSignInMessage }
+    { rSignIn: signIn }
   )(SignIn)
 );

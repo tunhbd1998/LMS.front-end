@@ -1,14 +1,8 @@
 import { RestClient } from '@supporters/rest-client/rest-client';
-import {
-  getCookie,
-  updateCookie,
-  deleteCookie
-} from '@supporters/utils/cookies';
+import { getCookie, updateCookie } from '@supporters/utils/cookies';
 import { get } from 'lodash';
 import axios from 'axios';
 import * as actionTypes from '../action-types';
-
-export const clearSignInMessage = () => ({});
 
 export function signOut() {
   // return dispatch => {
@@ -37,7 +31,7 @@ export const signInFailed = message => ({
   payload: { message }
 });
 
-export const signIn = (username, password) => {
+export const signIn = (username, password, callback) => {
   return dispatch => {
     dispatch(processingAuth());
 
@@ -59,11 +53,16 @@ export const signIn = (username, password) => {
           if (token) {
             updateCookie('token', token);
             updateCookie('role', role);
-            return dispatch(signInSuccess(token, role));
+            dispatch(signInSuccess(token, role));
+            window.location.replace('/');
           }
 
           return dispatch(signInFailed(message));
         }
+      })
+      .catch(error => {
+        console.log('catch error sign in', error);
+        dispatch(processingAuthDone());
       });
   };
 };

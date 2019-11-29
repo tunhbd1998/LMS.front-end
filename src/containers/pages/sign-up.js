@@ -2,16 +2,10 @@ import React from 'react';
 import { Container, Typography, Grid } from '@material-ui/core';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import {
-  H1,
-  Logo,
-  Input,
-  Button,
-  Dropdown,
-  Snackbar
-} from '@commons/components';
-import { genders, dropdownData } from '@supporters/mock';
-import { signUp, clearSignUpMessage } from '@supporters/store/redux/actions';
+import { H1, Logo, Input, Button, Dropdown } from '@commons/components';
+import { genders } from '@supporters/mock';
+import { signUp } from '@supporters/store/redux/actions';
+import color from '@supporters/utils/color';
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -35,6 +29,7 @@ class SignUp extends React.Component {
       IDCardNumber,
       gender
     } = this.state;
+    const { rSignUp } = this.props;
 
     if (
       !username ||
@@ -45,6 +40,7 @@ class SignUp extends React.Component {
       !gender
     )
       return;
+
     rSignUp(username, password, fullname, email, IDCardNumber, gender);
   };
 
@@ -53,7 +49,12 @@ class SignUp extends React.Component {
   };
 
   render() {
-    const { history, rResponse, rIsSigningUp, rClearMessage } = this.props;
+    const {
+      history,
+      rFailedResponse,
+      rIsSigningUp,
+      rSuccessfuldResponse
+    } = this.props;
     const {
       username,
       password,
@@ -111,12 +112,7 @@ class SignUp extends React.Component {
               handleChange={this.changeState('IDCardNumber')}
             />
           </Grid>
-          {/* <Grid item xs={6}>
-            <Input label="Ngày sinh" id="i4" type="date" />
-          </Grid>
-          <Grid item xs={12}>
-            <Input label="Số điện thoại" id="i5" />
-          </Grid> */}
+
           <Grid item xs={12}>
             <Input
               label="Địa chỉ email"
@@ -126,27 +122,25 @@ class SignUp extends React.Component {
               handleChange={this.changeState('email')}
             />
           </Grid>
-          {/* <Grid item xs={12}>
-            <Input label="Nghề nghiệp" id="i7" />
-          </Grid>
-          <Grid item xs={6}>
-            <Input
-              label="MSSV"
-              id="i8"
-              value={IDCardNumber}
-              handleChange={this.changeState('IDCardNumber')}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <Dropdown
-              label="Nơi học tập"
-              id="i9"
-              value={1}
-              data={dropdownData}
-            />
-          </Grid> */}
 
           <Grid item xs={12}>
+            {rFailedResponse && rFailedResponse.message && (
+              <Typography gutterBottom align="center" color="secondary">
+                {rFailedResponse.message === 'username have exists'
+                  ? 'Tài khoản đã tồn tại'
+                  : rFailedResponse.message}
+              </Typography>
+            )}
+            {rSuccessfuldResponse && rSuccessfuldResponse.message && (
+              <Typography
+                gutterBottom
+                align="center"
+                style={{ color: color.success }}
+              >
+                {rSuccessfuldResponse.message}
+              </Typography>
+            )}
+
             <Button
               disabled={rIsSigningUp}
               variant="contained"
@@ -176,10 +170,6 @@ class SignUp extends React.Component {
             </Button>
           </Grid>
         </Grid>
-
-        {rResponse && (
-          <Snackbar open handleClose={rClearMessage} message={rResponse} />
-        )}
       </Container>
     );
   }
@@ -188,9 +178,10 @@ class SignUp extends React.Component {
 export default withRouter(
   connect(
     state => ({
-      rResponse: state.signUp.response,
-      rIsSigningUp: state.signUp.isSigningUp
+      rFailedResponse: state.signUpReducer.failedResponse,
+      rSuccessfuldResponse: state.signUpReducer.successfulResponse,
+      rIsSigningUp: state.signUpReducer.isSigningUp
     }),
-    { rSignUp: signUp, rClearMessage: clearSignUpMessage }
+    { rSignUp: signUp }
   )(SignUp)
 );

@@ -7,8 +7,8 @@ export function injectAuth(ComposedComponent, isRev) {
     componentDidMount() {}
 
     render() {
-      //   if (!getCookie('token') && !isRev) return <Redirect to="/sign-in" />;
-      //   if (getCookie('token') && isRev) return <Redirect to="/" />;
+      if (!getCookie('token') && !isRev) return <Redirect to="/sign-in" />;
+      if (getCookie('token') && isRev) return <Redirect to="/" />;
 
       // eslint-disable-next-line react/jsx-props-no-spreading
       return <ComposedComponent {...this.props} />;

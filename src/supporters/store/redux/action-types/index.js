@@ -1,12 +1,14 @@
 // auth action types
 export const PROCESSING_AUTH = 'PROCESSING_AUTH';
 export const PROCESSING_AUTH_DONE = 'PROCESSING_AUTH_DONE';
-export const SIGN_IN = 'SIGN_IN';
+// export const SIGN_IN = 'SIGN_IN';
 export const SIGN_IN_SUCCESS = 'SIGN_IN_SUCCESS';
 export const SIGN_IN_FAILED = 'SIGN_IN_FAILED';
-export const SIGN_UP_MEMBER = 'SIGN_UP_MEMBER';
+
+export const IS_SIGNING_UP = 'IS_SIGNING_UP';
 export const SIGN_UP_MEMBER_SUCCESS = 'SIGN_UP_MEMBER_SUCCESS';
 export const SIGN_UP_MEMBER_FAILED = 'SIGN_UP_MEMBER_FAILED';
+
 export const GET_PROFILE = 'GET_PROFILE';
 export const GET_PROFILE_SUCCESS = 'GET_PROFILE_SUCCESS';
 export const GET_PROFILE_FAIL = 'GET_PROFILE_FAILED';
@@ -17,8 +19,6 @@ export const UPLOAD_AVATAR_FAIL = 'UPLOAD_AVATAR_FAILED';
 
 export const MODE_EDIT_PROFILE_ON = 'MODE_EDIT_PROFILE_ON';
 export const MODE_EDIT_PROFILE_DONE = 'MODE_EDIT_PROFILE_DONE';
-
-
 
 // main reducer types
 export const UPDATE_SEARCH_OPTIONS = 'UPDATE_SEARCH_OPTIONS';

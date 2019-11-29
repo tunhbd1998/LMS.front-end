@@ -1,19 +1,20 @@
 import { RestClient } from '@supporters/rest-client/rest-client';
+import * as actionTypes from '../action-types';
 
-// action types
-export const SIGNUP = {
-  IS_SIGNING_UP: 'IS_SIGNING_UP',
-  SIGNUP_RESPONSE: 'SIGNUP_RESPONSE'
-};
+export const isSigningUp = value => ({
+  type: actionTypes.IS_SIGNING_UP,
+  payload: value
+});
 
-export function clearSignUpMessage() {
-  return dispatch => {
-    dispatch({
-      type: SIGNUP.SIGNUP_RESPONSE,
-      message: ''
-    });
-  };
-}
+export const signUpSuccessfully = message => ({
+  type: actionTypes.SIGN_UP_MEMBER_SUCCESS,
+  payload: { message }
+});
+
+export const signUpFailed = message => ({
+  type: actionTypes.SIGN_UP_MEMBER_FAILED,
+  payload: { message }
+});
 
 export function signUp(
   username,
@@ -24,8 +25,9 @@ export function signUp(
   gender
 ) {
   return dispatch => {
-    dispatch({ type: SIGNUP.IS_SIGNING_UP, value: true });
-    dispatch(clearSignUpMessage());
+    dispatch(isSigningUp(true));
+    dispatch(signUpSuccessfully(''));
+    dispatch(signUpFailed(''));
 
     new RestClient()
       .asyncPost('/users/sign-up-member', {
@@ -37,25 +39,17 @@ export function signUp(
         gender
       })
       .then(response => {
+        dispatch(isSigningUp(false));
+        console.log(response.error.code);
         if (response.data && response.data.status)
-          dispatch({
-            type: SIGNUP.SIGNUP_RESPONSE,
-            message: 'Đăng ký thành công'
-          });
-        else
-          dispatch({
-            type: SIGNUP.SIGNUP_RESPONSE,
-            message: response.data.message
-          });
-
-        dispatch({ type: SIGNUP.IS_SIGNING_UP, value: false });
+          dispatch(signUpSuccessfully('Đăng ký thành công'));
+        else if (response.error.code === 500)
+          dispatch(signUpFailed('Đã có lỗi xảy ra'));
+        else dispatch(signUpFailed(response.error.message));
       })
       .catch(error => {
-        dispatch({
-          type: SIGNUP.SIGNUP_RESPONSE,
-          message: error.message
-        });
-        dispatch({ type: SIGNUP.IS_SIGNING_UP, value: false });
+        console.log('catch error signup', error);
+        dispatch(isSigningUp(false));
       });
   };
 }

@@ -2,15 +2,7 @@ import React from 'react';
 import { Container, Typography, Grid } from '@material-ui/core';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import {
-  H1,
-  Logo,
-  Input,
-  Title,
-  Button,
-  Dropdown,
-  Snackbar
-} from '@commons/components';
+import { H1, Logo, Input, Title, Button, Dropdown } from '@commons/components';
 import { dropdownData, genders } from '@supporters/mock';
 import moment from 'moment';
 import { signUp } from '@supporters/store/redux/actions';
@@ -259,9 +251,6 @@ class SignUpAdmin extends React.Component {
             </Button>
           </Grid>
         </Grid>
-        {rResponse && (
-          <Snackbar open handleClose={() => {}} message={rResponse} />
-        )}
       </Container>
     );
   }
