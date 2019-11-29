@@ -1,71 +1,27 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { get } from 'lodash';
+import SignIn from '@containers/pages/sign-in';
+import SignUp from '@containers/pages/sign-up';
+import SignUpAdmin from '@containers/pages/sign-up-admin';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { injectAuth } from '@supporters/hoc';
 import App from '@components/app';
-import { getCookie } from '@supporters/utils/cookies';
-import SignIn from '@containers/pages/signin';
-import SignUp from '@containers/pages/signup';
-import SignUpAdmin from '@containers/pages/signup-admin';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect
-} from 'react-router-dom';
-import { bindActionCreators } from 'redux';
-import * as authActions from '@supporters/store/redux/actions/auth.actions';
-import UserPage from '../pages/user-page';
 
-function Routers({ token, actions }) {
-  let isLoggedIn = false;
-
-  if (!token) {
-    const actualToken = getCookie('token');
-    const actualRole = getCookie('role');
-
-    if (actualToken) {
-      isLoggedIn = true;
-      actions.signInSuccess(actualToken, actualRole);
-      // actions.getProfile();
-    }
-  } else {
-    isLoggedIn = true;
-  }
+function Routers() {
   return (
     <Router>
       <Switch>
-        <Route path="/sign-in" exact>
-          {!isLoggedIn ? <SignIn /> : <Redirect to="/" />}
-        </Route>
-        <Route path="/sign-up" exact>
-          <SignUp />
-        </Route>
-        <Route path="/sign-up-lab" exact>
-          <SignUpAdmin />
-        </Route>
-        <Route path="/">
-          <UserPage />
-        </Route>
+        <Route path="/sign-in" component={injectAuth(SignIn, true)} />
+        <Route path="/sign-up" component={injectAuth(SignUp, true)} />
+        <Route
+          path="/sign-up-admin"
+          component={injectAuth(SignUpAdmin, true)}
+        />
+        <Route path="/" component={injectAuth(App)} />
+
         <Route path="*">404 - Not Found!</Route>
       </Switch>
     </Router>
   );
 }
 
-const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators(
-    {
-      signInSuccess: authActions.signInSuccess
-    },
-    dispatch
-  )
-});
-
-const mapStateToProps = state => ({
-  token: get(state, ['authReducer', 'user', 'token'])
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Routers);
+export default Routers;

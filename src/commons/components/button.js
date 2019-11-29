@@ -1,7 +1,15 @@
 import React from 'react';
 import MUIButton from '@material-ui/core/Button';
 
-export function Button({ variant, children, color, onClick,onChange }) {
+export function Button({
+  variant,
+  children,
+  disabled,
+  type,
+  color,
+  onClick,
+  onChange
+}) {
   return (
     <MUIButton
       onClick={onClick}
@@ -17,6 +25,8 @@ export function Button({ variant, children, color, onClick,onChange }) {
       fullWidth
       variant={variant}
       color={color}
+      type={type}
+      disabled={disabled}
     >
       {children}
     </MUIButton>

@@ -4,10 +4,10 @@ const dropdownData = [
   { label: '3', value: 3 }
 ];
 
-const gender = [
+const genders = [
   { label: 'Nam', value: 'male' },
   { label: 'Nữ', value: 'female' },
   { label: 'Khác', value: 'other' }
 ];
 
-export { dropdownData, gender };
+export { dropdownData, genders };
