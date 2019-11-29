@@ -1,10 +1,11 @@
 import React from 'react';
 import MUIButton from '@material-ui/core/Button';
 
-export function Button({ variant, children, color, onClick }) {
+export function Button({ variant, children, color, onClick,onChange }) {
   return (
     <MUIButton
       onClick={onClick}
+      onChange={onChange}
       style={{
         color: variant === 'contained' ? 'white' : '',
         boxShadow:

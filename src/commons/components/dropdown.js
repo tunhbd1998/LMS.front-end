@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, TextField, MenuItem } from '@material-ui/core';
 import color from '@supporters/utils/color';
 
-export function Dropdown({ id, value, data, handleChange, label }) {
+export function Dropdown({ id, value, data, handleChange, label ,defaultValue,disabled}) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <Typography
@@ -22,6 +22,8 @@ export function Dropdown({ id, value, data, handleChange, label }) {
         select
         value={value}
         onChange={handleChange}
+        defaultValue={defaultValue}
+        disabled={disabled}
         variant="outlined"
       >
         {data.map(option => (

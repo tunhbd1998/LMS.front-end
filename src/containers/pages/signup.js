@@ -34,7 +34,7 @@ class SignUp extends React.Component {
         IDCardNumber
       })
       .then(response => {
-        if (response.data && response.data.data.status === true) {
+        if (response.data && response.data.status === true) {
           //  ok
         }
       });
@@ -45,7 +45,7 @@ class SignUp extends React.Component {
     const { username, password, fullname, email, IDCardNumber } = this.state;
 
     return (
-      <Container maxWidth="sm" style={{ marginTop: 60 }}>
+      <Container style={{ marginTop: 60}}>
         <Logo />
         <H1 style={{ margin: '20px 0' }}>Đăng ký tài khoản mới</H1>
 
