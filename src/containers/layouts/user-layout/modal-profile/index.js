@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
   button: {
     backgroundColor: '#109CF1',
     color:"white",
-    padding: '5px 10px',
+    padding: '5px 20px',
     marginBottom:10,
     '&:hover': {
         boxShadow:'0px 4px 10px rgba(16, 156, 241, 0.24)',
