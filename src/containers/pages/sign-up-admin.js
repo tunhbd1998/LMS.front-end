@@ -3,7 +3,15 @@ import { Container, Typography, Grid } from '@material-ui/core';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { H1, Logo, Input, Title, Button, Dropdown } from '@commons/components';
-import { dropdownData, genders } from '@supporters/mock';
+import { genders } from '@commons/data/gender';
+import { universities } from '@commons/data/university';
+import { specializes } from '@commons/data/specialize';
+import { provinces } from '@commons/data/province';
+import {
+  processUniversity,
+  processSpecializes,
+  processProvinces
+} from '@supporters/utils/process-data';
 import moment from 'moment';
 import { signUp } from '@supporters/store/redux/actions';
 
@@ -19,15 +27,16 @@ class SignUpAdmin extends React.Component {
       IDCardNumber: '',
       phone: '',
       email: '',
-      university: 1,
+      university: '',
       gender: 1,
       job: '',
 
       // lab
       labName: '',
-      labUniversity: 1,
-      labAddress: '',
-      labSpecialize: 1
+      labUniversity: '',
+      labProvince: '',
+      labDetailAddress: '',
+      labSpecialize: ''
     };
   }
 
@@ -36,7 +45,13 @@ class SignUpAdmin extends React.Component {
   };
 
   render() {
-    const { history, rSignUp, rResponse, rIsSigningUp } = this.props;
+    const {
+      history,
+      rSignUp,
+      rFailedResponse,
+      rIsSigningUp,
+      rSuccessfuldResponse
+    } = this.props;
 
     const {
       username,
@@ -53,7 +68,8 @@ class SignUpAdmin extends React.Component {
 
       labName,
       labUniversity,
-      labAddress,
+      labProvince,
+      labDetailAddress,
       labSpecialize
     } = this.state;
 
@@ -73,18 +89,30 @@ class SignUpAdmin extends React.Component {
             />
           </Grid>
           <Grid item xs={12}>
+            <Dropdown
+              label="Tỉnh"
+              id="i22"
+              displayEmpty
+              data={processProvinces(provinces)}
+              value={labProvince}
+              onChange={this.changeState('labProvince')}
+            />
+          </Grid>
+          <Grid item xs={12}>
             <Input
               label="Địa chỉ lab"
               id="i2"
-              value={labAddress}
-              handleChange={this.changeState('labAddress')}
+              value={labDetailAddress}
+              handleChange={this.changeState('labDetailAddress')}
             />
           </Grid>
+
           <Grid item xs={6}>
             <Dropdown
               label="Trực thuộc"
               id="i3"
-              data={dropdownData}
+              displayEmpty
+              data={processUniversity(universities)}
               value={labUniversity}
               onChange={this.changeState('labUniversity')}
             />
@@ -93,14 +121,12 @@ class SignUpAdmin extends React.Component {
             <Dropdown
               label="Lĩnh vực"
               id="i4"
+              displayEmpty
               value={labSpecialize}
               onChange={this.changeState('labSpecialize')}
-              data={dropdownData}
+              data={processSpecializes(specializes)}
             />
           </Grid>
-          {/* <Grid item xs={12}>
-            <Input label="Giấy chứng nhận hoạt động" id="i5" />
-          </Grid> */}
         </Grid>
 
         <Title>Thông tin cá nhân</Title>
@@ -193,18 +219,55 @@ class SignUpAdmin extends React.Component {
             <Dropdown
               label="Nơi công tác"
               id="i13"
-              data={dropdownData}
+              data={processUniversity(universities)}
               value={university}
               onChange={this.changeState('university')}
             />
           </Grid>
 
           <Grid item xs={12}>
+            {rFailedResponse && rFailedResponse.message && (
+              <Typography gutterBottom align="center" color="secondary">
+                {rFailedResponse.message === 'username have exists'
+                  ? 'Tài khoản đã tồn tại'
+                  : rFailedResponse.message}
+              </Typography>
+            )}
+            {rSuccessfuldResponse && rSuccessfuldResponse.message && (
+              <Typography
+                gutterBottom
+                align="center"
+                style={{ color: color.success }}
+              >
+                {rSuccessfuldResponse.message}
+              </Typography>
+            )}
+
             <Button
               variant="contained"
               color="primary"
               disabled={rIsSigningUp}
-              onClick={() =>
+              onClick={() => {
+                if (
+                  !username ||
+                  !password ||
+                  !birthday ||
+                  !fullname ||
+                  !IDNumber ||
+                  !IDCardNumber ||
+                  !phone ||
+                  !email ||
+                  !university ||
+                  !gender ||
+                  !job ||
+                  !labName ||
+                  !labUniversity ||
+                  !labProvince ||
+                  !labDetailAddress ||
+                  !labSpecialize
+                )
+                  return;
+
                 rSignUp({
                   user: {
                     username,
@@ -222,11 +285,14 @@ class SignUpAdmin extends React.Component {
                   lab: {
                     name: labName,
                     university: labUniversity,
-                    address: labAddress,
+                    address: {
+                      province: labProvince,
+                      detail: labDetailAddress
+                    },
                     specialize: labSpecialize
                   }
-                })
-              }
+                });
+              }}
             >
               Đăng ký
             </Button>
@@ -259,7 +325,8 @@ class SignUpAdmin extends React.Component {
 export default withRouter(
   connect(
     state => ({
-      rResponse: state.signUpReducer.response,
+      rFailedResponse: state.signUpReducer.failedResponse,
+      rSuccessfuldResponse: state.signUpReducer.successfulResponse,
       rIsSigningUp: state.signUpReducer.isSigningUp
     }),
     { rSignUp: signUp }

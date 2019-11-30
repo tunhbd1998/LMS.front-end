@@ -1,6 +1,5 @@
 import React from 'react';
 import { Container, Typography, Grid } from '@material-ui/core';
-import { genders, dropdownData } from '@supporters/mock';
 import { H1, Logo, Button, Input, Dropdown } from '@commons/components';
 import { get } from 'lodash';
 import { makeStyles } from '@material-ui/core/styles';

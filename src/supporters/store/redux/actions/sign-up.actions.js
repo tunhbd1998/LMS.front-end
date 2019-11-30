@@ -40,12 +40,17 @@ export function signUp(
       })
       .then(response => {
         dispatch(isSigningUp(false));
-        console.log(response.error.code);
-        if (response.data && response.data.status)
-          dispatch(signUpSuccessfully('Đăng ký thành công'));
-        else if (response.error.code === 500)
-          dispatch(signUpFailed('Đã có lỗi xảy ra'));
-        else dispatch(signUpFailed(response.error.message));
+        if (response.data) {
+          if (response.data.status)
+            dispatch(signUpSuccessfully('Đăng ký thành công'));
+          else dispatch(signUpFailed(response.data.message));
+        }
+
+        if (response.error) {
+          if (response.error.code === 500)
+            dispatch(signUpFailed('Đã có lỗi xảy ra'));
+          else dispatch(signUpFailed(response.error.message));
+        }
       })
       .catch(error => {
         console.log('catch error signup', error);

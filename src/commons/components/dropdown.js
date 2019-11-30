@@ -10,6 +10,7 @@ export function Dropdown({
   label,
   defaultValue,
   disabled,
+  displayEmpty,
   ...rest
 }) {
   return (
@@ -29,6 +30,7 @@ export function Dropdown({
         }}
         id={id}
         select
+        SelectProps={{ displayEmpty: true }}
         value={value}
         onChange={onChange}
         defaultValue={defaultValue}

@@ -3,7 +3,7 @@ import { Container, Typography, Grid } from '@material-ui/core';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { H1, Logo, Input, Button, Dropdown } from '@commons/components';
-import { genders } from '@supporters/mock';
+import { genders } from '@commons/data/gender';
 import { signUp } from '@supporters/store/redux/actions';
 import color from '@supporters/utils/color';
 
