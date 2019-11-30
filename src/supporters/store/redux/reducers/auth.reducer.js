@@ -6,7 +6,7 @@ const initStates = {
     token: null,
     role: null,
     profile: null,
-    editMode: false,
+    editMode: false
   },
   failedAuth: {
     status: false,
@@ -19,34 +19,34 @@ export const authReducer = (state = initStates, { type, payload }) => {
     case actionTypes.MODE_EDIT_PROFILE_ON:
       return {
         ...state,
-        user :{
+        user: {
           ...state.user,
-          editMode : true
+          editMode: true
         }
-      }
+      };
     case actionTypes.MODE_EDIT_PROFILE_DONE:
-        return {
-          ...state,
-          user :{
-            ...state.user,
-            // profile : payload.profile,
-            editMode : false
-          }
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          // profile : payload.profile,
+          editMode: false
         }
+      };
     case actionTypes.UPLOAD_AVATAR:
-      return {...state}
+      return { ...state };
     case actionTypes.UPLOAD_AVATAR_SUCCESS:
       return {
         ...state,
-        user : {
+        user: {
           ...state.user,
           profile: payload.profile.data
         }
-      }
+      };
     case actionTypes.UPLOAD_AVATAR_FAIL:
       return {
         ...state
-      }
+      };
     case actionTypes.PROCESSING_AUTH:
       return { ...state, isProcessingAuth: true };
     case actionTypes.PROCESSING_AUTH_DONE:
