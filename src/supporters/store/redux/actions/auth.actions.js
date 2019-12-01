@@ -54,7 +54,7 @@ export const signIn = (username, password, callback) => {
             updateCookie('token', token);
             updateCookie('role', role);
             dispatch(signInSuccess(token, role));
-            window.location.replace('/');
+            // window.location.replace('/');
           }
 
           return dispatch(signInFailed(message));

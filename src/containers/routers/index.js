@@ -3,20 +3,24 @@ import SignIn from '@containers/pages/sign-in';
 import SignUp from '@containers/pages/sign-up';
 import SignUpAdmin from '@containers/pages/sign-up-admin';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { injectAuth } from '@supporters/hoc';
+import { alreadyAuth } from '@supporters/hoc';
 import App from '@components/app';
+import UserPage from '../pages/user-page';
 
 function Routers() {
+  console.log('render');
   return (
     <Router>
       <Switch>
-        <Route path="/sign-in" component={injectAuth(SignIn, true)} />
-        <Route path="/sign-up" component={injectAuth(SignUp, true)} />
+        <Route path="/sign-in" component={SignIn} />
+        <Route path="/sign-up" component={SignUp} />
+        <Route path="/sign-up-lab" component={SignUpAdmin} />
         <Route
-          path="/sign-up-admin"
-          component={injectAuth(SignUpAdmin, true)}
+          location={{ state: { def: 'def' } }}
+          path="/"
+          abc="abc"
+          component={alreadyAuth(UserPage, '/')}
         />
-        <Route path="/" component={injectAuth(App)} />
 
         <Route path="*">404 - Not Found!</Route>
       </Switch>

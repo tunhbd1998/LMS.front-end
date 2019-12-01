@@ -2,6 +2,7 @@ import * as actionTypes from '../action-types';
 
 const initStates = {
   isProcessingAuth: false,
+  isGettingProfile: false,
   user: {
     token: null,
     role: null,
@@ -11,7 +12,8 @@ const initStates = {
   failedAuth: {
     status: false,
     message: null
-  }
+  },
+  signInSuccess: false
 };
 
 export const authReducer = (state = initStates, { type, payload }) => {
@@ -58,7 +60,8 @@ export const authReducer = (state = initStates, { type, payload }) => {
           ...state.user,
           token: payload.token,
           role: payload.role || null
-        }
+        },
+        signInSuccess: true
       };
     case actionTypes.SIGN_IN_FAILED:
       return {
@@ -66,11 +69,18 @@ export const authReducer = (state = initStates, { type, payload }) => {
         failedAuth: {
           ...state.failedAuth,
           message: payload.message
-        }
+        },
+        signInSuccess: false
+      };
+    case actionTypes.GET_PROFILE:
+      return {
+        ...state,
+        isGettingProfile: true
       };
     case actionTypes.GET_PROFILE_SUCCESS:
       return {
         ...state,
+        isGettingProfile: false,
         user: {
           ...state.user,
           profile: payload.profile

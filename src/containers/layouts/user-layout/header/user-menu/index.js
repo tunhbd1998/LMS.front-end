@@ -23,13 +23,40 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import * as authActions from '@supporters/store/redux/actions/auth.actions';
 import { disableLink } from '@supporters/utils/link';
-import Profile from '../../modal-profile/index'
-
+import Loading from '@components/loading';
+import Profile from '../../modal-profile/index';
 
 const useStyles = makeStyles(theme => ({
   button: {
     fontSize: 14,
     color: '#FFFFFF'
+  },
+  menu: {
+    '&::after': {
+      display: 'block',
+      right: '25px',
+      content: '""',
+      height: 0,
+      top: '-10px',
+      width: 0,
+      position: 'absolute',
+      borderLeft: '10px solid transparent',
+      borderRight: '10px solid transparent',
+      borderBottom: '10px solid #f9f9f9'
+    },
+
+    '&::before': {
+      display: 'block',
+      right: '25px',
+      content: '""',
+      height: 0,
+      top: '-11px',
+      width: 0,
+      position: 'absolute',
+      borderLeft: '11px solid transparent',
+      borderRight: '11px solid transparent',
+      borderBottom: '11px solid #fff'
+    }
   },
   spacingOne: {
     marginRight: 2
@@ -52,7 +79,13 @@ const useStyles = makeStyles(theme => ({
     width: '50px',
     height: '50px',
     borderRadius: '50%',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    position: 'relative',
+    background: '#fff'
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%'
   },
   userInfo: {
     display: 'flex',
@@ -62,14 +95,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function UserMenu({ user, actions }) {
+function UserMenu({ user, actions, isGettingProfile }) {
   const AVATAR_DEFAUL = '/media/images/logo/avatar-default.png';
   const classes = useStyles();
   const [isOpenUserMenu, setOpenUserMenu] = React.useState(false);
   const userRef = React.useRef(null);
 
   React.useEffect(() => {
-    if (!get(user, ['profile'])) {
+    if (!get(user, ['profile']) && !isGettingProfile) {
       actions.getProfile();
     }
   });
@@ -100,11 +133,18 @@ function UserMenu({ user, actions }) {
           onClick={handleToggleUserMenu}
           ref={userRef}
         >
-          <Avatar
-            alt="Remy Sharp"
-            className={classes.avatar}
-            src={get(user, ['profile', 'avatarImage']) || AVATAR_DEFAUL}
-          />
+          <div className={classes.avatar}>
+            {isGettingProfile ? (
+              <Loading />
+            ) : (
+              <Avatar
+                alt="Remy Sharp"
+                className={classes.avatarImage}
+                src={get(user, ['profile', 'avatarImage']) || AVATAR_DEFAUL}
+              />
+            )}
+          </div>
+
           <div className={classes.userInfo} style={{}}>
             <span>{get(user, ['profile', 'fullname']) || 'Your name'}</span>
             <ArrowDropDownIcon />
@@ -128,6 +168,7 @@ function UserMenu({ user, actions }) {
         open={isOpenUserMenu}
         anchorEl={userRef.current}
         role={undefined}
+        style={{ marginTop: '10px' }}
         transition
         disablePortal
       >
@@ -139,9 +180,9 @@ function UserMenu({ user, actions }) {
                 placement === 'bottom' ? 'center top' : 'center bottom'
             }}
           >
-            <Paper>
+            <Paper style={{ position: 'relative' }} className={classes.menu}>
               {/* disable onClickAway={handleCloseUserMenu} */}
-              <ClickAwayListener >
+              <ClickAwayListener>
                 <MenuList
                   autoFocusItem={isOpenUserMenu}
                   id="menu-list-grow"
@@ -151,7 +192,10 @@ function UserMenu({ user, actions }) {
                   {user.token ? (
                     <div>
                       <MenuItem>
-                        <Profile profile = {get(user,['profile'])} editMode = {get(user,['editMode'])} />
+                        <Profile
+                          profile={get(user, ['profile'])}
+                          editMode={get(user, ['editMode'])}
+                        />
                       </MenuItem>
 
                       <MenuItem onClick={handleCloseUserMenu}>
@@ -164,7 +208,10 @@ function UserMenu({ user, actions }) {
                         </a>
                       </MenuItem>
                       <MenuItem onClick={handleCloseUserMenu}>
-                        <a href="javascript:void(0)" className={classes.subMenuLink}>
+                        <a
+                          href="javascript:void(0)"
+                          className={classes.subMenuLink}
+                        >
                           <WorkIcon className={classes.spacingOne} />
                           Các lab đã tham gia
                         </a>
@@ -207,13 +254,14 @@ function UserMenu({ user, actions }) {
 }
 
 const mapStateToProps = state => ({
-  user: get(state, ['authReducer', 'user'])
+  user: get(state, ['authReducer', 'user']),
+  isGettingProfile: get(state, ['authReducer', 'isGettingProfile'])
 });
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      getProfile: authActions.getProfile,
+      getProfile: authActions.getProfile
     },
     dispatch
   )

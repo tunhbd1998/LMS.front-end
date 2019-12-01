@@ -1,15 +1,25 @@
 import React from 'react';
 import { Container, Typography, Grid } from '@material-ui/core';
 import { withRouter } from 'react-router';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { get } from 'lodash';
 import { H1, Logo, Input, Link, Button } from '@commons/components';
 import { signIn } from '@supporters/store/redux/actions';
+import { getCookie } from '@supporters/utils/cookies';
 
 class SignIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = { username: '', password: '' };
   }
+
+  // componentDidMount() {
+  //   const token = getCookie('token');
+  //   const role = getCookie('role');
+
+  //   if ()
+  // }
 
   changeState = field => e => {
     this.setState({ [field]: e.target.value });
@@ -26,8 +36,23 @@ class SignIn extends React.Component {
   };
 
   render() {
-    const { history, rFailedAuth, rIsProcessingAuth } = this.props;
+    const {
+      history,
+      location,
+      rFailedAuth,
+      rIsProcessingAuth,
+      rSignInSuccess,
+      rUser
+    } = this.props;
     const { username, password } = this.state;
+    console.log(this.props);
+    if (
+      (rUser.token && rUser.role) ||
+      (getCookie('token') && getCookie('role'))
+    ) {
+      const destUrl = get(location, ['state', 'destUrl']);
+      return <Redirect to={destUrl || '/'} />;
+    }
 
     return (
       <Container maxWidth="sm" style={{ marginTop: 60 }}>
@@ -108,7 +133,9 @@ export default withRouter(
   connect(
     state => ({
       rFailedAuth: state.authReducer.failedAuth,
-      rIsProcessingAuth: state.authReducer.isProcessingAuth
+      rIsProcessingAuth: state.authReducer.isProcessingAuth,
+      rSignInSuccess: state.authReducer.signInSuccess,
+      rUser: state.authReducer.user
     }),
     { rSignIn: signIn }
   )(SignIn)

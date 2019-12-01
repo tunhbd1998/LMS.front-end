@@ -2,7 +2,7 @@ import React from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { styles } from '@commons/globals/common-styles';
 
-export default function Loading() {
+export default function Loading(props) {
   return (
     <div
       style={{
@@ -17,7 +17,7 @@ export default function Loading() {
         background: 'rgba(0,0,0,0.2)'
       }}
     >
-      <CircularProgress style={{ color: styles.colorBlue }} />
+      <CircularProgress style={{ color: styles.colorBlue }} {...props} />
     </div>
   );
 }
