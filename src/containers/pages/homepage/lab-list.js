@@ -37,8 +37,11 @@ function LabList({ labs, token, actions, searchOptions }) {
   const classes = useStyles();
 
   React.useEffect(() => {
-    if (!labs.totalPage || !labs.page || isEmpty(labs.list)) {
-      actions.fetchLabs({});
+    if (
+      (!labs.totalPage || !labs.page || isEmpty(labs.list)) &&
+      !labs.loading
+    ) {
+      actions.fetchLabs({ ...searchOptions, page: labs.page || 1 });
     }
   });
 

@@ -5,7 +5,7 @@ const initStates = {
     province: 'all',
     university: 'all',
     specialize: 'all',
-    name: null
+    name: ''
   },
   labs: {
     totalPage: null,

@@ -54,28 +54,31 @@ export const fetchLabs = ({
 }) => dispatch => {
   dispatch(fetchingLabs());
 
-  // new RestClient()
-  //   .asyncGet('/labs', {
-  //     name,
-  //     province,
-  //     university,
-  //     specialize,
-  //     page,
-  //     pageSize
-  //   })
-  //   .then(res => {
-  //     if (res.error) {
-  //       return dispatch(fetchLabsFailed());
-  //     }
+  new RestClient()
+    .asyncGet('/labs', {
+      name,
+      province,
+      university,
+      specialize,
+      page,
+      pageSize
+    })
+    .then(res => {
+      console.log('fetch labs res', res);
 
-  //     dispatch(fetchLabsSuccess(res.data));
-  //   })
-  //   .catch(err => {
-  //     dispatch(fetchLabsFailed());
-  //   });
+      if (res.error) {
+        console.log('error', res.error);
+        return dispatch(fetchLabsFailed());
+      }
+      dispatch(fetchLabsSuccess({ ...res.data, list: res.data.labs }));
+      dispatch(fetchingLabsDone());
+    })
+    .catch(err => {
+      dispatch(fetchLabsFailed());
+      dispatch(fetchingLabsDone());
+    });
 
-  dispatch(fetchLabsSuccess(labs));
-  dispatch(fetchingLabsDone());
+  // dispatch(fetchLabsSuccess(labs));
 };
 
 export const fetchingProjectRecruitments = () => ({
