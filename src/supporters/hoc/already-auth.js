@@ -15,19 +15,20 @@ export function alreadyAuth(ComposedComponent, destUrl = null) {
     const token = getCookie('token');
     const role = getCookie('role');
 
-    if ((token && role) || (user.token && user.role)) {
-      if (!user.token || !user.role) {
-        actions.signInSuccess(token || user.token, role || user.role);
-      }
+    return <ComposedComponent {...props} />;
+    // if ((token && role) || (user.token && user.role)) {
+    //   if (!user.token || !user.role) {
+    //     actions.signInSuccess(token || user.token, role || user.role);
+    //   }
 
-      if (!user.profile && !isGettingProfile) {
-        actions.getProfile();
-      }
-      console.log('1');
-      return <ComposedComponent {...props} />;
-    }
+    //   if (!user.profile && !isGettingProfile) {
+    //     actions.getProfile();
+    //   }
+    //   console.log('1');
+    //   return <ComposedComponent {...props} />;
+    // }
 
-    return <Redirect push to={{ pathname: '/sign-in', state: { destUrl } }} />;
+    // return <Redirect push to={{ pathname: '/sign-in', state: { destUrl } }} />;
     // if (!getCookie('token') && !isRev) return <Redirect to="/sign-in" />;
     // if (getCookie('token') && isRev) return <Redirect to="/" />;
   }
@@ -48,10 +49,7 @@ export function alreadyAuth(ComposedComponent, destUrl = null) {
   });
 
   const ConnectedWrappedComponent = withRouter(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(WrappedComponent)
+    connect(mapStateToProps, mapDispatchToProps)(WrappedComponent)
   );
 
   return ConnectedWrappedComponent;
