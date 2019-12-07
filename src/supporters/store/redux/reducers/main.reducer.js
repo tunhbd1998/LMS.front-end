@@ -147,6 +147,23 @@ export const mainReducer = (state = initStates, { type, payload }) => {
           list: payload.res.list
         }
       };
+    case actionTypes.UPDATE_FETCH_HIGHLIGHT_LABS_STATUS:
+      return {
+        ...state,
+        labs: {
+          ...state.labs,
+          loading: payload.status
+        }
+      };
+    case actionTypes.FETCH_HIGHLIGHT_LABS_SUCCESS:
+      return {
+        ...state,
+        labs: {
+          totalPage: payload.totalPage,
+          page: payload.page,
+          list: [...state.labs.list, ...payload.labs]
+        }
+      };
     default:
       return { ...state };
   }

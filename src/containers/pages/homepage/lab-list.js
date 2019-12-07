@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { Container, Button, makeStyles } from '@material-ui/core';
 import LabItem from '@components/lab-item';
 import { styles } from '@commons/globals/common-styles';
-import * as mainActions from '@supporters/store/redux/actions/main.actions';
+import { fetchHighlightLabs as fetchHighlightLabsAction } from '@supporters/store/redux/actions/main.actions';
 import Loading from '@components/loading';
 import * as fetchDataConfigs from '@commons/configs/fetch-data';
 
@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function LabList({ labs, token, actions, searchOptions }) {
+function LabList({ labs, actions }) {
   const classes = useStyles();
 
   React.useEffect(() => {
@@ -41,7 +41,7 @@ function LabList({ labs, token, actions, searchOptions }) {
       (!labs.totalPage || !labs.page || isEmpty(labs.list)) &&
       !labs.loading
     ) {
-      actions.fetchLabs({ ...searchOptions, page: labs.page || 1 });
+      actions.fetchHighlightLabs({ page: labs.page || 1 });
     }
   });
 
@@ -71,7 +71,7 @@ function LabList({ labs, token, actions, searchOptions }) {
           color: styles.mainTextColor
         }}
       >
-        {token ? 'Các lab cùng trường với bạn' : 'Các lab'}
+        Các phòng lab nổi bật
       </span>
       <Container
         style={{
@@ -99,14 +99,14 @@ function LabList({ labs, token, actions, searchOptions }) {
 
 const mapStateToProps = state => ({
   token: get(state, ['authReducer', 'user', 'token']),
-  labs: get(state, ['mainReducer', 'labs']),
-  searchOptions: get(state, ['mainReducer', 'searchOptions'])
+  labs: get(state, ['mainReducer', 'labs'])
+  // searchOptions: get(state, ['mainReducer', 'searchOptions'])
 });
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      fetchLabs: mainActions.fetchLabs
+      fetchHighlightLabs: fetchHighlightLabsAction
     },
     dispatch
   )
