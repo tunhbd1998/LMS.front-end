@@ -5,28 +5,21 @@ import { Redirect, withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import {
   signInSuccess as signInSuccessAction,
-  signInFailed as signInFailedAction,
   getProfile as getProfileAction
 } from '@supporters/store/redux/actions/auth.actions';
 import { get } from 'lodash';
 
-export function alreadyAuth(ComposedComponent, destUrl = null) {
+export function shouldAuth(ComposedComponent, destUrl = null) {
   function WrappedComponent(props) {
-    const { actions, user, isGettingProfile } = props;
+    const { user } = props;
     const token = getCookie('token');
     const role = getCookie('role');
 
-    if (token && role) {
-      if (!user.token || !user.role) {
-        actions.signInSuccess(token || user.token, role || user.role);
-      }
-
-      if (!user.profile && !isGettingProfile) {
-        actions.getProfile();
-      }
+    if (token && role && (user.token && user.role)) {
+      return <ComposedComponent {...props} />;
     }
 
-    return <ComposedComponent {...props} />;
+    return <Redirect push to={{ pathname: '/sign-in', state: { destUrl } }} />;
   }
 
   const mapStateToProps = state => ({
@@ -38,7 +31,6 @@ export function alreadyAuth(ComposedComponent, destUrl = null) {
     actions: bindActionCreators(
       {
         signInSuccess: signInSuccessAction,
-        signInFailed: signInFailedAction,
         getProfile: getProfileAction
       },
       dispatch
@@ -46,7 +38,10 @@ export function alreadyAuth(ComposedComponent, destUrl = null) {
   });
 
   const ConnectedWrappedComponent = withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(WrappedComponent)
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(WrappedComponent)
   );
 
   return ConnectedWrappedComponent;

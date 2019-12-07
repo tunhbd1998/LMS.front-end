@@ -207,3 +207,38 @@ export const fetchLabRecruitments = (page, pageSize) => dispatch => {
   const mockData = dispatch(fetchLabRecruitmentsSuccess(labRecruitments));
   dispatch(fetchingLabRecruitmentsDone());
 };
+
+export const updateFetchHighlightLabsStatus = status => ({
+  type: actionTypes.UPDATE_FETCH_HIGHLIGHT_LABS_STATUS,
+  payload: { status }
+});
+
+export const fetchHighlightLabsSuccess = ({ totalPage, page, labs }) => ({
+  type: actionTypes.FETCH_HIGHLIGHT_LABS_SUCCESS,
+  payload: { totalPage, page, labs }
+});
+
+export const fetchHighlightLabsFailed = () => ({
+  type: actionTypes.FETCH_HIGHLIGHT_LABS_FAILED,
+  payload: {}
+});
+
+export const fetchHighlightLabs = (page, pageSize) => dispatch => {
+  dispatch(updateFetchHighlightLabsStatus(true));
+
+  new RestClient()
+    .asyncGet('/labs/highlight', { page, pageSize })
+    .then(res => {
+      if (res.error) {
+        return dispatch(fetchHighlightLabsFailed());
+      }
+
+      dispatch(fetchHighlightLabsSuccess(res.data));
+
+      dispatch(updateFetchHighlightLabsStatus(false));
+    })
+    .catch(err => {
+      dispatch(fetchHighlightLabsFailed());
+      dispatch(updateFetchHighlightLabsStatus(false));
+    });
+};

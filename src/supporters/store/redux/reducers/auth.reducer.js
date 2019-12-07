@@ -70,7 +70,13 @@ export const authReducer = (state = initStates, { type, payload }) => {
           ...state.failedAuth,
           message: payload.message
         },
-        signInSuccess: false
+        signInSuccess: false,
+        user: {
+          ...state.user,
+          token: null,
+          role: null,
+          profile: null
+        }
       };
     case actionTypes.GET_PROFILE:
       return {

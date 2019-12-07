@@ -6,7 +6,8 @@ import HomepageAdmin from '@containers/pages/homepage-admin';
 import HomepageMember from '@containers/pages/homepage-member';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { alreadyAuth } from '@supporters/hoc';
+import { alreadyAuth, shouldAuth } from '@supporters/hoc';
+import App from '@components/app';
 import UserPage from '../pages/user-page';
 
 function Routers() {
@@ -14,7 +15,7 @@ function Routers() {
   return (
     <Router>
       <Switch>
-        <Route path="/sign-in" component={SignIn} />
+        <Route path="/sign-in" component={alreadyAuth(SignIn)} />
         <Route path="/sign-up" component={SignUp} />
         <Route path="/sign-up-lab" component={SignUpAdmin} />
         <Route path="/admin" component={HomepageAdmin} />
@@ -23,7 +24,7 @@ function Routers() {
           location={{ state: { def: 'def' } }}
           path="/"
           abc="abc"
-          component={alreadyAuth(UserPage, '/')}
+          component={shouldAuth(UserPage, '/')}
         />
 
         <Route path="*">404 - Not Found!</Route>

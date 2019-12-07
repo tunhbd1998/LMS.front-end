@@ -2,34 +2,21 @@ import React from 'react';
 import {
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
   ListItemAvatar,
   Avatar,
   Typography,
   ListItemSecondaryAction,
-  IconButton
+  IconButton,
+  ListItemIcon
 } from '@material-ui/core';
-import {
-  Assignment,
-  Stars,
-  Person,
-  Build,
-  AllInbox,
-  Alarm,
-  CalendarToday,
-  MoreHoriz
-} from '@material-ui/icons';
+import { MoreHoriz, AllInbox, Build, Alarm } from '@material-ui/icons';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import { Logo, Title, UserMin } from '@commons/components';
+import { Title, Button } from '@commons/components';
 import color from '@supporters/utils/color';
 import { withStyles } from '@material-ui/core/styles';
-
-const user = {
-  name: 'Hoang Van A',
-  email: 'abc123hcmus@gmail.com'
-};
+import ProjectItem from './nav-project-item';
 
 const styles = {
   root: {
@@ -47,7 +34,7 @@ const styles = {
   }
 };
 
-class NavLabAdminIn extends React.Component {
+class NavLabMemberIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -59,21 +46,31 @@ class NavLabAdminIn extends React.Component {
 
   render() {
     const { classes } = this.props;
-
     return (
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
-          width: 400,
+          width: 300,
           padding: 20,
           boxShadow: ' 6px 0px 18px rgba(0, 0, 0, 0.06)',
-          height: '100vh',
           overflowY: 'auto'
         }}
       >
-        <Title>Dự án của bạn</Title>
+        <Title>Dự án</Title>
 
+        <List>
+          {new Array(5)
+            .fill({
+              image: '/media/images/logo/logo192.png',
+              name: 'Viện khoa học không gian'
+            })
+            .map((tab, index) => (
+              <ProjectItem tab={tab} key={index} />
+            ))}
+        </List>
+
+        <Title>Sự kiện</Title>
         <List>
           {new Array(5)
             .fill({
@@ -115,11 +112,37 @@ class NavLabAdminIn extends React.Component {
               </ListItem>
             ))}
         </List>
-        <Title>Lab yêu thích</Title>
-        <Title>Lab đang chờ duyệt</Title>
+
+        <Title>Sự kiện</Title>
+        <Button variant="outlined" color="primary" onClick={() => {}}>
+          Thêm mới yêu cầu
+        </Button>
+
+        <List>
+          {[
+            { icon: <AllInbox />, text: 'Yêu cầu sử dụng lab' },
+            { icon: <Build />, text: 'Yêu cầu mượn dụng cụ' },
+            { icon: <Alarm />, text: 'Lịch hẹn' }
+          ].map((tab, index) => (
+            <ListItem
+              classes={{
+                root: classes.root
+              }}
+              button
+              key={index}
+            >
+              <ListItemIcon style={{ color: 'inherit' }}>
+                {tab.icon}
+              </ListItemIcon>
+              <ListItemText primary={tab.text} />
+            </ListItem>
+          ))}
+        </List>
       </div>
     );
   }
 }
 
-export default withRouter(connect(null, {})(withStyles(styles)(NavLabAdminIn)));
+export default withRouter(
+  connect(null, {})(withStyles(styles)(NavLabMemberIn))
+);

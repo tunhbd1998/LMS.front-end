@@ -58,10 +58,11 @@ export function UserMin({ avatar, name, description, hasDropDown, ...props }) {
           >
             {name}
           </Typography>
-          <IconButton size="small">
-            <ArrowDropDown
-              onClick={event => setAnchorMenu(event.currentTarget)}
-            />
+          <IconButton
+            size="small"
+            onClick={event => setAnchorMenu(event.currentTarget)}
+          >
+            <ArrowDropDown />
           </IconButton>
         </div>
         <Typography variant="body2" color="textSecondary">

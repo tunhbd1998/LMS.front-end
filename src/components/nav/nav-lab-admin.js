@@ -53,7 +53,7 @@ class NavLabAdmin extends React.Component {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          width: 400,
+          width: 300,
           padding: 20,
           boxShadow: ' 6px 0px 18px rgba(0, 0, 0, 0.06)',
           height: '100vh',
