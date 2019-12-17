@@ -14,7 +14,7 @@ import {
   Assignment,
   Stars,
   CalendarToday,
-  MoreHoriz
+  InfoOutlined
 } from '@material-ui/icons';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
@@ -54,7 +54,7 @@ class NavLabMember extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, history } = this.props;
 
     return (
       <div
@@ -133,8 +133,13 @@ class NavLabMember extends React.Component {
                   </Typography>
                 </ListItemText>
                 <ListItemSecondaryAction>
-                  <IconButton size="small" edge="end" aria-label="comments">
-                    <MoreHoriz />
+                  <IconButton
+                    onClick={() => history.push('/member/lab/32/info')}
+                    size="small"
+                    edge="end"
+                    aria-label="comments"
+                  >
+                    <InfoOutlined />
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
