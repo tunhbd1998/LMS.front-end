@@ -45,16 +45,19 @@ class NavLabMemberIn extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, style } = this.props;
     return (
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
-          width: 300,
+          minWidth: 300,
+          background: 'white',
+          borderRadius: 4,
           padding: 20,
           boxShadow: ' 6px 0px 18px rgba(0, 0, 0, 0.06)',
-          overflowY: 'auto'
+          overflowY: 'auto',
+          ...style
         }}
       >
         <Title>Dự án</Title>

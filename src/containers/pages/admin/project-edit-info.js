@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import { NavLabAdmin } from '@components/nav';
+import { NavLabAdmin, NavLabAdminProject } from '@components/nav';
 import { HeaderDashboard } from '@components/header-dashboard';
 import { Paper, Typography, Grid } from '@material-ui/core';
 import { AddPhotoAlternate } from '@material-ui/icons';
@@ -13,7 +13,7 @@ const images = [
   '/media/images/logo/logo192.png'
 ];
 
-class LabEditInfo extends React.Component {
+class ProjectEditInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -40,10 +40,12 @@ class LabEditInfo extends React.Component {
           <HeaderDashboard
             breadcrums={[
               { label: 'Viện khoa học không gian Hồ Chí Minh', to: '#' },
+              { label: 'Khám phá ngôi xao xa ơi là xa', to: '#' },
               { label: 'Cập nhật thông tin', to: '#' }
             ]}
           />
-          <div style={{ padding: 10, flex: 1 }}>
+          <div style={{ padding: 10, flex: 1, display: 'flex' }}>
+            <NavLabAdminProject style={{ marginRight: 20 }} />
             <Paper
               elevation={2}
               style={{
@@ -92,46 +94,59 @@ class LabEditInfo extends React.Component {
                     </div>
                   </div>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={8}>
                   <Input
-                    value="Viện khoa học không gian Hồ Chí Minh"
+                    value="Khám phá ngôi xao xa ơi là xa"
                     // handleChange={this.changeState('')}
-                    label="Tên lab"
+                    label="Tên dự án"
                     id="i1"
                   />
                 </Grid>
-                <Grid item xs={12}>
-                  <Input
-                    value=""
-                    // handleChange={this.changeState('')}
-                    label="Địa chỉ lab"
+                <Grid item xs={4}>
+                  <Dropdown
+                    label="Trạng thái"
                     id="i2"
+                    value={1}
+                    // onChange={this.changeState('')}
+                    data={[{ value: 1, label: 'Bí mật' }]}
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <Input
-                    value=""
+                    value="1998-03-03"
                     // handleChange={this.changeState('')}
-                    label="Trực thuộc"
+                    label="Ngày bắt đầu"
+                    type="date"
                     id="i3"
                   />
                 </Grid>
                 <Grid item xs={6}>
-                  <Dropdown
-                    label="Lĩnh vực"
+                  <Input
+                    label="Ngày kết thúc"
                     id="i4"
-                    // value={}
+                    type="date"
+                    value="1998-03-03"
                     // onChange={this.changeState('')}
-                    data={[]}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Dropdown
+                    value={1}
+                    // handleChange={this.changeState('')}
+                    label="Lĩnh vực"
+                    id="i5"
+                    data={[{ value: 1, label: 'Công nghệ thông tin' }]}
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <Input
-                    value=""
-                    type="file"
+                    // value=""
                     // handleChange={this.changeState('')}
-                    label="Giấy chứng nhận hoạt động"
-                    id="i5"
+                    label="Mô tả dự án"
+                    id="i6"
+                    multiline
+                    rows={4}
+                    rowsMax={6}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -153,4 +168,4 @@ class LabEditInfo extends React.Component {
   }
 }
 
-export default withRouter(connect(null, {})(LabEditInfo));
+export default withRouter(connect(null, {})(ProjectEditInfo));
