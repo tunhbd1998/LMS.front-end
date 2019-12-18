@@ -46,10 +46,7 @@ export function alreadyAuth(ComposedComponent, destUrl = null) {
   });
 
   const ConnectedWrappedComponent = withRouter(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(WrappedComponent)
+    connect(mapStateToProps, mapDispatchToProps)(WrappedComponent)
   );
 
   return ConnectedWrappedComponent;

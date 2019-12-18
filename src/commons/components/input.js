@@ -2,7 +2,18 @@ import React from 'react';
 import { Typography, OutlinedInput } from '@material-ui/core';
 import color from '@supporters/utils/color';
 
-export function Input({ id, value, handleChange, label, type,defaultValue,disabled }) {
+export function Input({
+  id,
+  value,
+  handleChange,
+  label,
+  type,
+  defaultValue,
+  disabled,
+  rows,
+  rowsMax,
+  multiline
+}) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <Typography
@@ -19,11 +30,16 @@ export function Input({ id, value, handleChange, label, type,defaultValue,disabl
         style={{
           backgroundColor: color.background
         }}
-        id={id}
-        value={value}
-        onChange={handleChange}
-        defaultValue={defaultValue}
-        disabled ={disabled}
+        {...{
+          rows,
+          rowsMax,
+          multiline,
+          id,
+          value,
+          onChange: handleChange,
+          defaultValue,
+          disabled
+        }}
       />
     </div>
   );
