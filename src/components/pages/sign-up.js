@@ -1,11 +1,12 @@
 import React from 'react';
+import { get } from 'lodash';
 import { Container, Typography, Grid } from '@material-ui/core';
-import { withRouter } from 'react-router';
+import { withRouter, Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { H1, Logo, Input, Button, Dropdown } from '@commons/components';
 import { genders } from '@commons/data/gender';
-import { signUp } from '@supporters/store/redux/actions';
-import color from '@supporters/utils/color';
+import { signUpMember, resetAuthState } from '@supporters/store/redux/actions';
+import { bindActionCreators } from 'redux';
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -18,6 +19,8 @@ class SignUp extends React.Component {
       IDCardNumber: '',
       gender: 1
     };
+
+    props.actions.resetAuthState();
   }
 
   submit = () => {
@@ -29,7 +32,7 @@ class SignUp extends React.Component {
       IDCardNumber,
       gender
     } = this.state;
-    const { rSignUp } = this.props;
+    const { actions } = this.props;
 
     if (
       !username ||
@@ -41,7 +44,14 @@ class SignUp extends React.Component {
     )
       return;
 
-    rSignUp(username, password, fullname, email, IDCardNumber, gender);
+    actions.signUpMember(
+      username,
+      password,
+      fullname,
+      email,
+      IDCardNumber,
+      gender
+    );
   };
 
   changeState = field => e => {
@@ -49,12 +59,7 @@ class SignUp extends React.Component {
   };
 
   render() {
-    const {
-      history,
-      rFailedResponse,
-      rIsSigningUp,
-      rSuccessfuldResponse
-    } = this.props;
+    const { history, isProcessingAuth, authState } = this.props;
     const {
       username,
       password,
@@ -64,7 +69,9 @@ class SignUp extends React.Component {
       gender
     } = this.state;
 
-    return (
+    return authState.status ? (
+      <Redirect to="/sign-in" />
+    ) : (
       <Container maxWidth="sm" style={{ marginTop: 60 }}>
         <Logo />
         <H1 style={{ margin: '20px 0' }}>Đăng ký tài khoản mới</H1>
@@ -124,25 +131,12 @@ class SignUp extends React.Component {
           </Grid>
 
           <Grid item xs={12}>
-            {rFailedResponse && rFailedResponse.message && (
-              <Typography gutterBottom align="center" color="secondary">
-                {rFailedResponse.message === 'username have exists'
-                  ? 'Tài khoản đã tồn tại'
-                  : rFailedResponse.message}
-              </Typography>
-            )}
-            {rSuccessfuldResponse && rSuccessfuldResponse.message && (
-              <Typography
-                gutterBottom
-                align="center"
-                style={{ color: color.success }}
-              >
-                {rSuccessfuldResponse.message}
-              </Typography>
-            )}
+            <Typography gutterBottom align="center" color="secondary">
+              {authState.message || null}
+            </Typography>
 
             <Button
-              disabled={rIsSigningUp}
+              disabled={isProcessingAuth}
               variant="contained"
               color="primary"
               onClick={this.submit}
@@ -178,10 +172,11 @@ class SignUp extends React.Component {
 export default withRouter(
   connect(
     state => ({
-      rFailedResponse: state.signUpReducer.failedResponse,
-      rSuccessfuldResponse: state.signUpReducer.successfulResponse,
-      rIsSigningUp: state.signUpReducer.isSigningUp
+      isProcessingAuth: get(state, ['authReducer', 'isProcessingAuth']),
+      authState: get(state, ['authReducer', 'authState'])
     }),
-    { rSignUp: signUp }
+    dispatch => ({
+      actions: bindActionCreators({ signUpMember, resetAuthState }, dispatch)
+    })
   )(SignUp)
 );

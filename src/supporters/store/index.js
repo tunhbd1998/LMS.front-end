@@ -11,7 +11,7 @@ export function getStore() {
   // inject reducers
   store.injectReducer('authReducer', authReducer);
   store.injectReducer('mainReducer', mainReducer);
-  store.injectReducer('signUpReducer', signUpReducer);
+  // store.injectReducer('signUpReducer', signUpReducer);
 
   return instance;
 }

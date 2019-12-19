@@ -1,27 +1,23 @@
 import React from 'react';
-import { bindActionCreators } from 'redux';
 import { get, isEmpty } from 'lodash';
 import { connect } from 'react-redux';
-import {
-  Container,
-  Button,
-  useMediaQuery,
-  makeStyles
-} from '@material-ui/core';
+import { Container, Button, makeStyles } from '@material-ui/core';
+import { bindActionCreators } from 'redux';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ProjectItem from '@components/project-item';
+import LabRecruitmentItem from '@components/lab-recruitment-item';
 import { styles } from '@commons/globals/common-styles';
 import * as mainActions from '@supporters/store/redux/actions/main.actions';
 import Loading from '@components/loading';
 import * as fetchDataConfigs from '@commons/configs/fetch-data';
+import NotFoundData from '../../../commons/components/not-found-data';
 
 const useStyles = makeStyles(theme => ({
   container: {
     padding: styles.contentPadding,
     paddingTop: '20px',
     paddingBottom: '20px',
-    background: 'url("/media/images/banner/banner-one.png")',
+    background: 'url("/media/images/banner/banner-two.png")',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat'
   },
@@ -68,51 +64,66 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function ProjectList({ projects, actions }) {
+function LabRecruitmentList({ recruitments, actions }) {
   const classes = useStyles();
 
   React.useEffect(() => {
-    if (!projects.page || !projects.totalPage || isEmpty(projects.list)) {
-      actions.fetchProjectRecruitments();
+    if (
+      (!recruitments.page ||
+        !recruitments.totalPage ||
+        isEmpty(recruitments.list)) &&
+      !recruitments.loading &&
+      !recruitments.message
+    ) {
+      actions.fetchLabRecruitments(
+        1,
+        fetchDataConfigs.LAB_RECRUITMENT_PAGE_SIZE
+      );
     }
   });
 
   const fetchNextPage = () => {
-    actions.fetchProjectRecruitments(
-      projects.page + (projects.page < projects.totalPage ? 1 : 0),
-      fetchDataConfigs.PROJECT_RECRUITMENT_PAGE_SIZE
+    actions.fetchLabRecruitments(
+      recruitments.page + (recruitments.page < recruitments.totalPage ? 1 : 0),
+      fetchDataConfigs.LAB_RECRUITMENT_PAGE_SIZE
     );
   };
 
   const fetchPrevPage = () => {
-    actions.fetchProjectRecruitments(
-      projects.page + (projects.page > 1 ? -1 : 0),
-      fetchDataConfigs.PROJECT_RECRUITMENT_PAGE_SIZE
+    actions.fetchLabRecruitments(
+      recruitments.page + (recruitments.page > 1 ? -1 : 0),
+      fetchDataConfigs.LAB_RECRUITMENT_PAGE_SIZE
     );
   };
 
   return (
     <Container className={classes.container}>
-      <span className={classes.title}>Các dự án đang tuyển thành viên</span>
+      <span className={classes.title}>Tin tuyển dụng thành viên lab</span>
       <Container className={classes.listContainer}>
         <Container className={classes.itemList}>
-          {projects.list.map(project => (
-            <ProjectItem key={project.id} project={project} />
+          {isEmpty(recruitments.list) && !recruitments.loading ? (
+            <NotFoundData />
+          ) : null}
+          {recruitments.list.map(recruitment => (
+            <LabRecruitmentItem
+              key={recruitment.id}
+              recruitment={recruitment}
+            />
           ))}
-          {projects.loading ? <Loading /> : null}
+          {recruitments.loading ? <Loading /> : null}
         </Container>
-        {projects.totalPage > 1 ? (
+        {recruitments.totalPage > 1 ? (
           <Container className={classes.buttons}>
             <Button
               className={classes.button}
-              disabled={projects.page === 1}
+              disabled={recruitments.page === 1}
               onClick={fetchPrevPage}
             >
               <ChevronLeftIcon />
             </Button>
             <Button
               className={classes.button}
-              disabled={projects.page === projects.totalPage}
+              disabled={recruitments.page === recruitments.totalPage}
               onClick={fetchNextPage}
             >
               <ChevronRightIcon />
@@ -125,13 +136,13 @@ function ProjectList({ projects, actions }) {
 }
 
 const mapStateToProps = state => ({
-  projects: get(state, ['mainReducer', 'projects'])
+  recruitments: get(state, ['mainReducer', 'labRecruitments'])
 });
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      fetchProjectRecruitments: mainActions.fetchProjectRecruitments
+      fetchLabRecruitments: mainActions.fetchLabRecruitments
     },
     dispatch
   )
@@ -140,4 +151,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ProjectList);
+)(LabRecruitmentList);

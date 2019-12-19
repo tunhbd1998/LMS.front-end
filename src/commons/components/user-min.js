@@ -7,8 +7,11 @@ import {
   MenuItem
 } from '@material-ui/core';
 import { ArrowDropDown } from '@material-ui/icons';
+import { signOut } from '@supporters/store/redux/actions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-function UserminMenu({ anchorEl, open, handleClose }) {
+function UserminMenu({ anchorEl, open, handleClose, signOutAction }) {
   return (
     <Menu
       anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
@@ -18,12 +21,26 @@ function UserminMenu({ anchorEl, open, handleClose }) {
       onClose={handleClose}
     >
       <MenuItem onClick={handleClose}>Thông tin cá nhân</MenuItem>
-      <MenuItem onClick={handleClose}>Đăng xuất</MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleClose();
+          signOutAction();
+        }}
+      >
+        Đăng xuất
+      </MenuItem>
     </Menu>
   );
 }
 
-export function UserMin({ avatar, name, description, hasDropDown, ...props }) {
+function UserMin({
+  avatar,
+  name,
+  description,
+  hasDropDown,
+  actions,
+  ...props
+}) {
   const [anchorMenu, setAnchorMenu] = useState(null);
 
   const { style } = props;
@@ -73,7 +90,22 @@ export function UserMin({ avatar, name, description, hasDropDown, ...props }) {
         open={Boolean(anchorMenu)}
         anchorEl={anchorMenu}
         handleClose={() => setAnchorMenu(null)}
+        signOutAction={signOut}
       />
     </div>
   );
 }
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      signOut
+    },
+    dispatch
+  )
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(UserMin);

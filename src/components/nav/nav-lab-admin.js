@@ -1,4 +1,5 @@
 import React from 'react';
+import { get } from 'lodash';
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import {
   Assignment,
@@ -13,11 +14,6 @@ import { connect } from 'react-redux';
 import { Logo, Title, UserMin } from '@commons/components';
 import color from '@supporters/utils/color';
 import { withStyles } from '@material-ui/core/styles';
-
-const user = {
-  name: 'Hoang Van A',
-  email: 'abc123hcmus@gmail.com'
-};
 
 const styles = {
   root: {
@@ -46,7 +42,7 @@ class NavLabAdmin extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, user } = this.props;
 
     return (
       <div
@@ -63,8 +59,8 @@ class NavLabAdmin extends React.Component {
         <Logo />
         <UserMin
           style={{ marginTop: 20 }}
-          name={user.name}
-          description={user.email}
+          name={get(user, ['profile', 'fullname'], 'Tên của bạn')}
+          description={get(user, ['profile', 'email'], 'Email của bạn')}
           hasDropdown
         />
         <Title>Quản lý</Title>
@@ -118,4 +114,13 @@ class NavLabAdmin extends React.Component {
   }
 }
 
-export default withRouter(connect(null, {})(withStyles(styles)(NavLabAdmin)));
+const mapStateToProps = state => ({
+  user: get(state, ['authReducer', 'user'])
+});
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    {}
+  )(withStyles(styles)(NavLabAdmin))
+);

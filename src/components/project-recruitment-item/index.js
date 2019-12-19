@@ -6,7 +6,7 @@ import WorkOutlineIcon from '@material-ui/icons/WorkOutline';
 import { Fade } from 'react-reveal';
 
 const useStyles = makeStyles(theme => ({
-  projectItem: {
+  projectRecruitmentItem: {
     width: '500px',
     height: '130px',
     boxShadow: '0px 0px 5px 2px rgba(0,0,0,0.2)',
@@ -17,9 +17,8 @@ const useStyles = makeStyles(theme => ({
     },
     padding: '5px',
     boxSizing: 'border-box'
-    // borderRadius: ''
   },
-  projectItemContent: {
+  projectRecruitmentItemContent: {
     display: 'flex',
     flexWrap: ' wrap',
     padding: '0px!important',
@@ -30,7 +29,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     height: '100%'
   },
-  projectInfo: {
+  projectRecruitmentInfo: {
     width: 'calc(100% - 110px - 30px)',
     height: '100%',
     display: 'flex',
@@ -40,7 +39,7 @@ const useStyles = makeStyles(theme => ({
     boxSizing: 'border-box',
     padding: '5px'
   },
-  projectInfoItem: {
+  projectRecruitmentInfoItem: {
     padding: '2px 0px',
     display: 'flex',
     alignItems: 'center'
@@ -52,39 +51,42 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function ProjectItem({ project }) {
+export default function ProjectRecruitmentItem({ recruitment }) {
   const classes = useStyles();
   const PROJECT_IMAGE_DEFAULT = '/media/images/logo/project-image-default.png';
 
   return (
     <Fade>
-      <Card className={classes.projectItem}>
-        <CardContent className={classes.projectItemContent}>
+      <Card className={classes.projectRecruitmentItem}>
+        <CardContent className={classes.projectRecruitmentItemContent}>
           <div style={{ width: '110px', height: '100%' }}>
             <img
               className={classes.projectImage}
-              src={project.image || PROJECT_IMAGE_DEFAULT}
+              src={
+                get(recruitment, ['forProject', 'image']) ||
+                PROJECT_IMAGE_DEFAULT
+              }
               alt="lab avatar"
             />
           </div>
 
-          <div className={classes.projectInfo}>
+          <div className={classes.projectRecruitmentInfo}>
             <span
-              className={`${classes.projectName} ${classes.projectInfoItem}`}
+              className={`${classes.projectName} ${classes.projectRecruitmentInfoItem}`}
             >
-              {project.name}
+              {get(recruitment, 'position', 'Vị trí tuyển dụng')}
             </span>
-            <span className={classes.projectInfoItem}>
+            <span className={classes.projectRecruitmentInfoItem}>
               <WorkOutlineIcon style={{ marginRight: '5px' }} />
-              {project.lab.name}
+              {get(recruitment, ['forProject', 'name'], 'Tên dự án')}
             </span>
-            <span className={classes.projectInfoItem}>
+            <span className={classes.projectRecruitmentInfoItem}>
+              <WorkOutlineIcon style={{ marginRight: '5px' }} />
+              {get(recruitment, ['forLab', 'name'], 'tên lab')}
+            </span>
+            <span className={classes.projectRecruitmentInfoItem}>
               <ScheduleIcon style={{ marginRight: '5px' }} />{' '}
-              {project.createdDate}
-            </span>
-            <span className={classes.projectInfoItem}>
-              <PermIdentityIcon style={{ marginRight: '5px' }} />{' '}
-              {project.members} thành viên
+              {get(recruitment, 'createdDate', 'Ngày tạo')}
             </span>
           </div>
         </CardContent>

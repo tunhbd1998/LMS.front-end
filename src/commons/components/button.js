@@ -6,6 +6,7 @@ export function Button({
   children,
   disabled,
   type,
+  href,
   color,
   onClick,
   onChange
@@ -27,6 +28,7 @@ export function Button({
       color={color}
       type={type}
       disabled={disabled}
+      href={href}
     >
       {children}
     </MUIButton>

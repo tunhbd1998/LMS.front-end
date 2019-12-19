@@ -8,6 +8,7 @@ import { styles } from '@commons/globals/common-styles';
 import { fetchHighlightLabs as fetchHighlightLabsAction } from '@supporters/store/redux/actions/main.actions';
 import Loading from '@components/loading';
 import * as fetchDataConfigs from '@commons/configs/fetch-data';
+import NotFoundData from '../../../commons/components/not-found-data';
 
 const useStyles = makeStyles(theme => ({
   loadMoreButton: {
@@ -39,18 +40,18 @@ function LabList({ labs, actions }) {
   React.useEffect(() => {
     if (
       (!labs.totalPage || !labs.page || isEmpty(labs.list)) &&
-      !labs.loading
+      !labs.loading &&
+      !labs.message
     ) {
-      actions.fetchHighlightLabs({ page: labs.page || 1 });
+      actions.fetchHighlightLabs(
+        get(labs, 'page', 1) || 1,
+        fetchDataConfigs.LAB_PAGE_SIZE
+      );
     }
   });
 
   const loadMoreLabs = () => {
-    actions.fetchLabs({
-      ...searchOptions,
-      page: labs.page + 1,
-      pageSize: fetchDataConfigs.LAB_PAGE_SIZE
-    });
+    actions.fetchHighlightLabs(labs.page + 1, fetchDataConfigs.LAB_PAGE_SIZE);
   };
 
   return (
@@ -78,10 +79,11 @@ function LabList({ labs, actions }) {
           display: 'flex',
           justifyContent: 'center',
           flexWrap: 'wrap',
-          padding: '0px'
+          padding: '20px 0px'
         }}
       >
         <Container className={classes.itemList}>
+          {isEmpty(labs.list) && !labs.loading ? <NotFoundData /> : null}
           {labs.list.map(lab => (
             <LabItem key={lab.id} lab={lab} />
           ))}

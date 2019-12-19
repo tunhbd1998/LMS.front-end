@@ -96,32 +96,34 @@ export const fetchProjectRecruitmentsSuccess = res => ({
   payload: { res }
 });
 
-export const fetchProjectRecruitmentsFailed = () => ({
+export const fetchProjectRecruitmentsFailed = message => ({
   type: actionTypes.FETCH_PROJECT_RECRUITMENTS_FAILED,
-  payload: {}
+  payload: { message }
 });
 
 export const fetchProjectRecruitments = (page, pageSize) => dispatch => {
   dispatch(fetchingProjectRecruitments());
 
-  // new RestClient()
-  //   .asyncGet('/projects/recruitments', {
-  //     page,
-  //     pageSize
-  //   })
-  //   .then(res => {
-  //     if (res.error) {
-  //       return dispatch(fetchProjectRecruitmentsFailed());
-  //     }
+  new RestClient()
+    .asyncGet('/recruitments/project-member/opening', {
+      page,
+      pageSize
+    })
+    .then(res => {
+      console.log('mainActions:fetchProjectRecruitments:res ', res);
+      if (res.error) {
+        dispatch(fetchProjectRecruitmentsFailed());
+      } else {
+        dispatch(fetchProjectRecruitmentsSuccess(res.data));
+      }
 
-  //     dispatch(fetchProjectRecruitmentsSuccess(res.data));
-  //   })
-  //   .catch(err => {
-  //     dispatch(fetchProjectRecruitmentsFailed());
-  //   });
-
-  dispatch(fetchProjectRecruitmentsSuccess(projectRecruitments));
-  dispatch(fetchingProjectRecruitmentsDone());
+      dispatch(fetchingProjectRecruitmentsDone());
+    })
+    .catch(err => {
+      console.log('mainActions:fetchProjectRecruitments:error ', err);
+      dispatch(fetchProjectRecruitmentsFailed('Không thể lấy được dữ liệu'));
+      dispatch(fetchingProjectRecruitmentsDone());
+    });
 };
 
 export const fetchingActivities = () => ({
@@ -147,24 +149,25 @@ export const fetchActivitiesFailed = () => ({
 export const fetchActivities = (page, pageSize) => dispatch => {
   dispatch(fetchingActivities());
 
-  // new RestClient()
-  //   .asyncGet('/activities/active', {
-  //     page,
-  //     pageSize
-  //   })
-  //   .then(res => {
-  //     if (res.error) {
-  //       return dispatch(fetchActivitiesFailed());
-  //     }
+  new RestClient()
+    .asyncGet('/activities/active', {
+      page,
+      pageSize
+    })
+    .then(res => {
+      if (res.error) {
+        dispatch(fetchActivitiesFailed('Không thể lấy được dữ liệu'));
+      } else {
+        dispatch(fetchActivitiesSuccess(res.data));
+      }
 
-  //     dispatch(fetchActivitiesSuccess(res.data));
-  //   })
-  //   .catch(err => {
-  //     dispatch(fetchActivitiesFailed());
-  //   });
-
-  dispatch(fetchActivitiesSuccess(activities));
-  dispatch(fetchingActivitiesDone());
+      dispatch(fetchingActivitiesDone());
+    })
+    .catch(err => {
+      console.log('mainActions:fetchActivities:error ', err);
+      dispatch(fetchActivitiesFailed('Không thể lấy được dữ liệu'));
+      dispatch(fetchingActivitiesDone());
+    });
 };
 
 export const fetchingLabRecruitments = () => ({
@@ -189,23 +192,24 @@ export const fetchLabRecruitmentsFailed = () => ({
 
 export const fetchLabRecruitments = (page, pageSize) => dispatch => {
   dispatch(fetchingLabRecruitments());
-  // new RestClient()
-  //   .asyncGet('/labs/recruitments', {
-  //     page,
-  //     pageSize
-  //   })
-  //   .then(res => {
-  //     if (res.error) {
-  //       return dispatch(fetchLabRecruitmentsFailed());
-  //     }
-
-  //     dispatch(fetchLabRecruitmentsSuccess(res.data));
-  //   })
-  //   .catch(err => {
-  //     dispatch(fetchLabRecruitmentsFailed());
-  //   });
-  const mockData = dispatch(fetchLabRecruitmentsSuccess(labRecruitments));
-  dispatch(fetchingLabRecruitmentsDone());
+  new RestClient()
+    .asyncGet('/recruitments/lab-member/opening', {
+      page,
+      pageSize
+    })
+    .then(res => {
+      if (res.error) {
+        dispatch(fetchLabRecruitmentsFailed('Không thể lấy được dữ liệu'));
+      } else {
+        dispatch(fetchLabRecruitmentsSuccess(res.data));
+      }
+      dispatch(fetchingLabRecruitmentsDone());
+    })
+    .catch(err => {
+      console.log('mainActions:fetchLabRecruitments:error ', err);
+      dispatch(fetchLabRecruitmentsFailed('Không thể lấy được dữ liệu'));
+      dispatch(fetchingLabRecruitmentsDone());
+    });
 };
 
 export const updateFetchHighlightLabsStatus = status => ({
@@ -218,19 +222,21 @@ export const fetchHighlightLabsSuccess = ({ totalPage, page, labs }) => ({
   payload: { totalPage, page, labs }
 });
 
-export const fetchHighlightLabsFailed = () => ({
+export const fetchHighlightLabsFailed = message => ({
   type: actionTypes.FETCH_HIGHLIGHT_LABS_FAILED,
-  payload: {}
+  payload: { message }
 });
 
 export const fetchHighlightLabs = (page, pageSize) => dispatch => {
   dispatch(updateFetchHighlightLabsStatus(true));
 
   new RestClient()
-    .asyncGet('/labs/highlight', { page, pageSize })
+    .asyncGet('/labs/highlights', { page, pageSize })
     .then(res => {
+      console.log('resres', res);
       if (res.error) {
-        return dispatch(fetchHighlightLabsFailed());
+        console.log('error', res.error);
+        return dispatch(fetchHighlightLabsFailed('Không thể lấy dữ liệu'));
       }
 
       dispatch(fetchHighlightLabsSuccess(res.data));
@@ -238,7 +244,8 @@ export const fetchHighlightLabs = (page, pageSize) => dispatch => {
       dispatch(updateFetchHighlightLabsStatus(false));
     })
     .catch(err => {
-      dispatch(fetchHighlightLabsFailed());
+      console.log('error', err);
+      dispatch(fetchHighlightLabsFailed('Không thể lấy dữ liệu'));
       dispatch(updateFetchHighlightLabsStatus(false));
     });
 };

@@ -1,2 +1,2 @@
 export * from './auth.actions';
-export * from './sign-up.actions';
+export * from './main.actions';

@@ -5,9 +5,9 @@ import { Container, makeStyles } from '@material-ui/core';
 import { get } from 'lodash';
 import { Fade } from 'react-reveal';
 import LabList from './lab-list';
-import ProjectList from './project-list';
+import ProjectRecruitmentList from './project-recruitment-list';
 import ActivityList from './activity-list';
-import RecruitmentList from './recruitment-list';
+import LabRecruitmentList from './lab-recruitment-list';
 
 const useStyles = makeStyles(theme => ({
   homepage: {
@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function Homepage({ projects }) {
+function Homepage() {
   const classes = useStyles();
 
   return (
@@ -32,13 +32,13 @@ function Homepage({ projects }) {
         <LabList />
       </Fade>
       <Fade>
-        <ProjectList />
+        <ProjectRecruitmentList />
       </Fade>
       <Fade>
         <ActivityList />
       </Fade>
       <Fade>
-        <RecruitmentList />
+        <LabRecruitmentList />
       </Fade>
     </Container>
   );

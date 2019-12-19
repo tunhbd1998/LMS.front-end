@@ -5,21 +5,17 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
 import { H1, Logo, Input, Link, Button } from '@commons/components';
-import { signIn } from '@supporters/store/redux/actions';
+import { signIn, resetAuthState } from '@supporters/store/redux/actions';
 import { getCookie } from '@supporters/utils/cookies';
+import { bindActionCreators } from 'redux';
 
 class SignIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = { username: '', password: '' };
+    console.log('props', props);
+    props.actions.resetAuthState();
   }
-
-  // componentDidMount() {
-  //   const token = getCookie('token');
-  //   const role = getCookie('role');
-
-  //   if ()
-  // }
 
   changeState = field => e => {
     this.setState({ [field]: e.target.value });
@@ -29,27 +25,17 @@ class SignIn extends React.Component {
     e.preventDefault();
 
     const { username, password } = this.state;
-    const { rSignIn } = this.props;
+    const { actions } = this.props;
 
     if (!username || !password) return;
-    rSignIn(username, password);
+    actions.signIn(username, password);
   };
 
   render() {
-    const {
-      history,
-      location,
-      rFailedAuth,
-      rIsProcessingAuth,
-      rSignInSuccess,
-      rUser
-    } = this.props;
+    const { history, location, user, authState, isProcessingAuth } = this.props;
     const { username, password } = this.state;
-    console.log(this.props);
-    if (
-      (rUser.token && rUser.role) ||
-      (getCookie('token') && getCookie('role'))
-    ) {
+
+    if (user.token && user.role && (getCookie('token') && getCookie('role'))) {
       const destUrl = get(location, ['state', 'destUrl']);
       return <Redirect to={destUrl || '/'} />;
     }
@@ -79,18 +65,14 @@ class SignIn extends React.Component {
             </Grid>
 
             <Grid item xs={12}>
-              {rFailedAuth && rFailedAuth.message && (
-                <Typography gutterBottom align="center" color="secondary">
-                  {rFailedAuth.message === 'Your account is incorrect'
-                    ? 'Thông tin đăng nhập không chính xác'
-                    : rFailedAuth.message}
-                </Typography>
-              )}
+              <Typography gutterBottom align="center" color="secondary">
+                {authState.message || null}
+              </Typography>
 
               <Button
                 variant="contained"
                 color="primary"
-                disabled={rIsProcessingAuth}
+                disabled={isProcessingAuth}
                 onClick={this.submit}
                 type="submit"
               >
@@ -132,11 +114,12 @@ class SignIn extends React.Component {
 export default withRouter(
   connect(
     state => ({
-      rFailedAuth: state.authReducer.failedAuth,
-      rIsProcessingAuth: state.authReducer.isProcessingAuth,
-      rSignInSuccess: state.authReducer.signInSuccess,
-      rUser: state.authReducer.user
+      isProcessingAuth: get(state, ['authReducer', 'isProcessingAuth']),
+      authState: get(state, ['authReducer', 'authState']),
+      user: get(state, ['authReducer', 'user'])
     }),
-    { rSignIn: signIn }
+    dispatch => ({
+      actions: bindActionCreators({ signIn, resetAuthState }, dispatch)
+    })
   )(SignIn)
 );

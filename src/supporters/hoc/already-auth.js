@@ -11,8 +11,7 @@ import {
 import { get } from 'lodash';
 
 export function alreadyAuth(ComposedComponent, destUrl = null) {
-  function WrappedComponent(props) {
-    const { actions, user, isGettingProfile } = props;
+  function WrappedComponent({ actions, user, isGettingProfile, ...props }) {
     const token = getCookie('token');
     const role = getCookie('role');
 
@@ -38,7 +37,6 @@ export function alreadyAuth(ComposedComponent, destUrl = null) {
     actions: bindActionCreators(
       {
         signInSuccess: signInSuccessAction,
-        signInFailed: signInFailedAction,
         getProfile: getProfileAction
       },
       dispatch
@@ -46,7 +44,10 @@ export function alreadyAuth(ComposedComponent, destUrl = null) {
   });
 
   const ConnectedWrappedComponent = withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(WrappedComponent)
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(WrappedComponent)
   );
 
   return ConnectedWrappedComponent;
