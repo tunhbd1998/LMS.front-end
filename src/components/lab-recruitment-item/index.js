@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function RecruitmentItem({ recruitment }) {
+export default function LabRecruitmentItem({ recruitment }) {
   const classes = useStyles();
   const LAB_IMAGE_DEFAULT = '/media/images/logo/lab-image-default.png';
 

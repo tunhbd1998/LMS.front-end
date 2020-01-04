@@ -11,25 +11,29 @@ const initStates = {
     totalPage: null,
     page: null,
     list: [],
-    loading: false
+    loading: false,
+    message: null
   },
-  projects: {
+  projectRecruitments: {
     totalPage: null,
     page: null,
     list: [],
-    loading: false
+    loading: false,
+    message: null
   },
   activities: {
     totalPage: null,
     page: null,
     list: [],
-    loading: false
+    loading: false,
+    message: null
   },
-  recruitments: {
+  labRecruitments: {
     totalPage: null,
     page: null,
     list: [],
-    loading: false
+    loading: false,
+    message: null
   }
 };
 
@@ -43,56 +47,65 @@ export const mainReducer = (state = initStates, { type, payload }) => {
           ...payload
         }
       };
-    case actionTypes.FETCHING_LABS:
-      return {
-        ...state,
-        labs: {
-          ...state.labs,
-          loading: true
-        }
-      };
-    case actionTypes.FETCHING_LABS_DONE:
-      return {
-        ...state,
-        labs: {
-          ...state.labs,
-          loading: false
-        }
-      };
-    case actionTypes.FETCH_LABS_SUCCESS:
-      return {
-        ...state,
-        labs: {
-          ...state.labs,
-          page: payload.res.page,
-          totalPage: payload.res.totalPage,
-          list: [...state.labs.list, ...payload.res.list]
-        }
-      };
+    // case actionTypes.FETCHING_LABS:
+    //   return {
+    //     ...state,
+    //     labs: {
+    //       ...state.labs,
+    //       loading: true
+    //     }
+    //   };
+    // case actionTypes.FETCHING_LABS_DONE:
+    //   return {
+    //     ...state,
+    //     labs: {
+    //       ...state.labs,
+    //       loading: false
+    //     }
+    //   };
+    // case actionTypes.FETCH_LABS_SUCCESS:
+    //   return {
+    //     ...state,
+    //     labs: {
+    //       ...state.labs,
+    //       page: payload.res.page,
+    //       totalPage: payload.res.totalPage,
+    //       list: [...state.labs.list, ...payload.res.list]
+    //     }
+    //   };
     case actionTypes.FETCHING_PROJECT_RECRUITMENTS:
       return {
         ...state,
-        projects: {
-          ...state.projects,
+        projectRecruitments: {
+          ...state.projectRecruitments,
           loading: true
         }
       };
     case actionTypes.FETCHING_PROJECT_RECRUITMENTS_DONE:
       return {
         ...state,
-        projects: {
-          ...state.projects,
+        projectRecruitments: {
+          ...state.projectRecruitments,
           loading: false
         }
       };
     case actionTypes.FETCH_PROJECT_RECRUITMENTS_SUCCESS:
       return {
         ...state,
-        projects: {
-          ...state.projects,
+        projectRecruitments: {
+          ...state.projectRecruitments,
           page: payload.res.page,
           totalPage: payload.res.totalPage,
-          list: payload.res.list
+          list: payload.res.recruitments,
+          message: 'success'
+        }
+      };
+    case actionTypes.FETCH_PROJECT_RECRUITMENTS_FAILED:
+      return {
+        ...state,
+        projectRecruitments: {
+          ...state.projectRecruitments,
+          message: payload.message
         }
       };
     case actionTypes.FETCHING_ACTIVE_ACTIVITIES:
@@ -118,33 +131,46 @@ export const mainReducer = (state = initStates, { type, payload }) => {
           ...state.activities,
           page: payload.res.page,
           totalPage: payload.res.totalPage,
-          list: payload.res.list
+          list: payload.res.activities,
+          message: 'success'
+        }
+      };
+    case actionTypes.FETCH_ACTIVE_ACTIVITIES_FAILED:
+      return {
+        ...state,
+        activities: {
+          ...state.activities,
+          page: payload.res.page,
+          totalPage: payload.res.totalPage,
+          list: payload.res.activities,
+          message: payload.message
         }
       };
     case actionTypes.FETCHING_LAB_RECRUITMENTS:
       return {
         ...state,
-        recruitments: {
-          ...state.recruitments,
+        labRecruitments: {
+          ...state.labRecruitments,
           loading: true
         }
       };
     case actionTypes.FETCHING_LAB_RECRUITMENTS_DONE:
       return {
         ...state,
-        recruitments: {
-          ...state.recruitments,
+        labRecruitments: {
+          ...state.labRecruitments,
           loading: false
         }
       };
     case actionTypes.FETCH_LAB_RECRUITMENTS_SUCCESS:
       return {
         ...state,
-        recruitments: {
-          ...state.recruitments,
+        labRecruitments: {
+          ...state.labRecruitments,
           page: payload.res.page,
           totalPage: payload.res.totalPage,
-          list: payload.res.list
+          list: payload.res.recruitments,
+          message: 'success'
         }
       };
     case actionTypes.UPDATE_FETCH_HIGHLIGHT_LABS_STATUS:
@@ -161,7 +187,18 @@ export const mainReducer = (state = initStates, { type, payload }) => {
         labs: {
           totalPage: payload.totalPage,
           page: payload.page,
-          list: [...state.labs.list, ...payload.labs]
+          list: [...state.labs.list, ...payload.labs],
+          message: 'success'
+        }
+      };
+    case actionTypes.FETCH_HIGHLIGHT_LABS_FAILED:
+      return {
+        ...state,
+        labs: {
+          totalPage: null,
+          page: null,
+          list: [],
+          message: payload.message
         }
       };
     default:

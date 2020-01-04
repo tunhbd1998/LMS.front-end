@@ -21,11 +21,10 @@ export class RestClient {
 
   async asyncGet(url, query = null) {
     let queryString = '?';
-    console.log('query', query);
 
     if (query) {
       keys(query)
-        .filter(key => !isEmpty(query[key]))
+        .filter(key => query[key])
         .forEach((field, index) => {
           if (index === 0) {
             queryString += `${field}=${query[field]}`;
@@ -34,6 +33,7 @@ export class RestClient {
           }
         });
     }
+
     const res = await fetch(this.createUrl(url + queryString), {
       method: 'GET',
       headers: this.createHeaders()

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -9,7 +10,6 @@ import { bindActionCreators } from 'redux';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import WorkIcon from '@material-ui/icons/Work';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
@@ -101,12 +101,6 @@ function UserMenu({ user, actions, isGettingProfile }) {
   const [isOpenUserMenu, setOpenUserMenu] = React.useState(false);
   const userRef = React.useRef(null);
 
-  React.useEffect(() => {
-    if (!get(user, ['profile']) && !isGettingProfile) {
-      actions.getProfile();
-    }
-  });
-
   const handleToggleUserMenu = () => {
     setOpenUserMenu(!isOpenUserMenu);
   };
@@ -181,7 +175,6 @@ function UserMenu({ user, actions, isGettingProfile }) {
             }}
           >
             <Paper style={{ position: 'relative' }} className={classes.menu}>
-              {/* disable onClickAway={handleCloseUserMenu} */}
               <ClickAwayListener>
                 <MenuList
                   autoFocusItem={isOpenUserMenu}
@@ -199,27 +192,31 @@ function UserMenu({ user, actions, isGettingProfile }) {
                       </MenuItem>
 
                       <MenuItem onClick={handleCloseUserMenu}>
-                        <a
-                          href="/favorite-labs"
+                        <Link
                           className={classes.subMenuLink}
+                          to="/member/favorite-labs"
                         >
-                          <FavoriteIcon className={classes.spacingOne} />
-                          Các lab yêu thích
-                        </a>
+                          <a>
+                            <FavoriteIcon className={classes.spacingOne} />
+                            Các lab yêu thích
+                          </a>
+                        </Link>
                       </MenuItem>
                       <MenuItem onClick={handleCloseUserMenu}>
-                        <a
-                          href="javascript:void(0)"
+                        <Link
                           className={classes.subMenuLink}
+                          to="/member/my-labs"
                         >
-                          <WorkIcon className={classes.spacingOne} />
-                          Các lab đã tham gia
-                        </a>
+                          <a>
+                            <WorkIcon className={classes.spacingOne} />
+                            Các lab đã tham gia
+                          </a>
+                        </Link>
                       </MenuItem>
                       <MenuItem onClick={handleCloseUserMenu}>
                         <a
                           href="/"
-                          onClick={disableLink}
+                          onClick={actions.signOut}
                           className={classes.subMenuLink}
                         >
                           <ExitToAppIcon className={classes.spacingOne} />
@@ -261,7 +258,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      getProfile: authActions.getProfile
+      signOut: authActions.signOut
     },
     dispatch
   )

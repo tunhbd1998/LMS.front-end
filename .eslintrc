@@ -42,7 +42,8 @@
     "no-unneeded-ternary": 0,
     "jsx-a11y/anchor-is-valid": 0,
     "no-script-url": 0,
-    "no-shadow": 0
+    "no-shadow": 0,
+    "eslint(react/jsx-boolean-value": 0
   },
   "globals": {
     "window": true,

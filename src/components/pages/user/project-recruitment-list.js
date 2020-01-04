@@ -1,48 +1,51 @@
 import React from 'react';
-import {
-  makeStyles,
-  Container,
-  Button,
-  useMediaQuery
-} from '@material-ui/core';
 import { bindActionCreators } from 'redux';
 import { get, isEmpty } from 'lodash';
 import { connect } from 'react-redux';
-import { styles } from '@commons/globals/common-styles';
-import ActivityItem from '@components/activity-item';
+import {
+  Container,
+  Button,
+  useMediaQuery,
+  makeStyles
+} from '@material-ui/core';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ProjectRecruitmentItem from '@components/project-recruitment-item';
+import { styles } from '@commons/globals/common-styles';
 import * as mainActions from '@supporters/store/redux/actions/main.actions';
 import Loading from '@components/loading';
 import * as fetchDataConfigs from '@commons/configs/fetch-data';
+import NotFoundData from '../../../commons/components/not-found-data';
 
 const useStyles = makeStyles(theme => ({
   container: {
     padding: styles.contentPadding,
     paddingTop: '20px',
     paddingBottom: '20px',
-    background: '#E0E0E0'
+    background: 'url("/media/images/banner/banner-one.png")',
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat'
   },
   title: {
     textAlign: 'center',
     display: 'block',
     padding: '20px 0px',
     fontSize: '30px',
-    color: styles.mainTextColor
-  },
-  itemList: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    padding: '0px',
-    position: 'relative'
+    color: '#fff'
   },
   listContainer: {
     display: 'flex',
     justifyContent: 'center',
     flexWrap: 'wrap',
     padding: '0px'
+  },
+  itemList: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    padding: '20px 0px',
+    position: 'relative'
   },
   buttons: {
     width: '100%',
@@ -56,9 +59,6 @@ const useStyles = makeStyles(theme => ({
     padding: '5px 30px',
     color: '#415764',
     background: '#fff',
-    '&:disabled': {
-      // background: 'rgba(0,0,0,0.1)'
-    },
     '&:not(:disabled):hover': {
       background: '#109CF1',
       color: '#fff'
@@ -66,53 +66,60 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function ActivityList({ activities, actions }) {
+function ProjectRecruitmentList({ recruitments, actions }) {
   const classes = useStyles();
 
   React.useEffect(() => {
-    if (!activities.page || !activities.totalPage || isEmpty(activities.list)) {
-      actions.fetchActivities();
+    if (
+      (!recruitments.page ||
+        !recruitments.totalPage ||
+        isEmpty(recruitments.list)) &&
+      !recruitments.loading &&
+      !recruitments.message
+    ) {
+      actions.fetchProjectRecruitments();
     }
   });
 
   const fetchNextPage = () => {
-    actions.fetchActivities(
-      activities.page + (activities.page < activities.totalPage ? 1 : 0),
-      fetchDataConfigs.ACTIVITY_PAGE_SIZE
+    actions.fetchProjectRecruitments(
+      recruitments.page + (recruitments.page < recruitments.totalPage ? 1 : 0),
+      fetchDataConfigs.PROJECT_RECRUITMENT_PAGE_SIZE
     );
   };
 
   const fetchPrevPage = () => {
-    actions.fetchActivities(
-      activities.page + (activities.page > 1 ? -1 : 0),
-      fetchDataConfigs.ACTIVITY_PAGE_SIZE
+    actions.fetchProjectRecruitments(
+      recruitments.page + (recruitments.page > 1 ? -1 : 0),
+      fetchDataConfigs.PROJECT_RECRUITMENT_PAGE_SIZE
     );
   };
 
   return (
     <Container className={classes.container}>
-      <span className={classes.title}>
-        Các hoạt động, sự kiện đang và sắp diễn ra
-      </span>
+      <span className={classes.title}>Các dự án đang tuyển thành viên</span>
       <Container className={classes.listContainer}>
         <Container className={classes.itemList}>
-          {activities.list.map(activity => (
-            <ActivityItem key={activity.id} activity={activity} />
+          {isEmpty(recruitments.list) && !recruitments.loading ? (
+            <NotFoundData />
+          ) : null}
+          {recruitments.list.map(recruitment => (
+            <ProjectItem key={recruitment.id} recruitment={recruitment} />
           ))}
-          {activities.loading ? <Loading /> : null}
+          {recruitments.loading ? <Loading /> : null}
         </Container>
-        {activities.totalPage > 1 ? (
+        {recruitments.totalPage > 1 ? (
           <Container className={classes.buttons}>
             <Button
               className={classes.button}
-              disabled={activities.page === 1}
+              disabled={recruitments.page === 1}
               onClick={fetchPrevPage}
             >
               <ChevronLeftIcon />
             </Button>
             <Button
               className={classes.button}
-              disabled={activities.page === activities.totalPage}
+              disabled={recruitments.page === recruitments.totalPage}
               onClick={fetchNextPage}
             >
               <ChevronRightIcon />
@@ -125,13 +132,13 @@ function ActivityList({ activities, actions }) {
 }
 
 const mapStateToProps = state => ({
-  activities: get(state, ['mainReducer', 'activities'])
+  recruitments: get(state, ['mainReducer', 'projectRecruitments'])
 });
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      fetchActivities: mainActions.fetchActivities
+      fetchProjectRecruitments: mainActions.fetchProjectRecruitments
     },
     dispatch
   )
@@ -140,4 +147,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ActivityList);
+)(ProjectRecruitmentList);

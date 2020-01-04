@@ -1,10 +1,10 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import { NavLabMember, NavLabMemberIn } from '@components/nav';
+import { NavLabAdmin, NavLabAdminProject } from '@components/nav';
 import { HeaderDashboard } from '@components/header-dashboard';
 
-class HomepageMember extends React.Component {
+class AdminPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -17,7 +17,7 @@ class HomepageMember extends React.Component {
   render() {
     return (
       <div style={{ display: 'flex' }}>
-        <NavLabMember />
+        <NavLabAdmin />
         <div
           style={{
             width: '100%',
@@ -35,7 +35,7 @@ class HomepageMember extends React.Component {
             ]}
           />
           <div style={{ padding: 10, display: 'flex', flex: 1 }}>
-            <NavLabMemberIn />
+            <NavLabAdminProject />
           </div>
         </div>
       </div>
@@ -43,4 +43,9 @@ class HomepageMember extends React.Component {
   }
 }
 
-export default withRouter(connect(null, {})(HomepageMember));
+export default withRouter(
+  connect(
+    null,
+    {}
+  )(AdminPage)
+);

@@ -9,15 +9,31 @@ const initStates = {
     profile: null,
     editMode: false
   },
-  failedAuth: {
+  authState: {
     status: false,
     message: null
-  },
-  signInSuccess: false
+  }
+  // failedAuth: {
+  //   status: false,
+  //   message: null
+  // },
+  // signUpInfo: {
+  //   status: false,
+  //   message: null
+  // },
+  // signInSuccess: false
 };
 
 export const authReducer = (state = initStates, { type, payload }) => {
   switch (type) {
+    case actionTypes.RESET_AUTH_STATE:
+      return {
+        ...state,
+        authState: {
+          status: false,
+          message: null
+        }
+      };
     case actionTypes.MODE_EDIT_PROFILE_ON:
       return {
         ...state,
@@ -61,16 +77,28 @@ export const authReducer = (state = initStates, { type, payload }) => {
           token: payload.token,
           role: payload.role || null
         },
-        signInSuccess: true
+        authState: {
+          status: true,
+          message: 'Đăng nhập thành công'
+        }
       };
     case actionTypes.SIGN_IN_FAILED:
       return {
         ...state,
-        failedAuth: {
-          ...state.failedAuth,
-          message: payload.message
+        user: {
+          ...state.user,
+          token: null,
+          role: null,
+          profile: null
         },
-        signInSuccess: false,
+        authState: {
+          status: false,
+          message: payload.message
+        }
+      };
+    case actionTypes.SIGN_OUT:
+      return {
+        ...state,
         user: {
           ...state.user,
           token: null,
@@ -78,15 +106,35 @@ export const authReducer = (state = initStates, { type, payload }) => {
           profile: null
         }
       };
-    case actionTypes.GET_PROFILE:
+    case actionTypes.SIGN_UP_SUCCESS:
+      return {
+        ...state,
+        authState: {
+          status: true,
+          message: payload.message
+        }
+      };
+    case actionTypes.SIGN_UP_FAILED:
+      return {
+        ...state,
+        authState: {
+          status: false,
+          message: payload.message
+        }
+      };
+    case actionTypes.GETTING_PROFILE:
       return {
         ...state,
         isGettingProfile: true
       };
+    case actionTypes.GETTING_PROFILE_DONE:
+      return {
+        ...state,
+        isGettingProfile: false
+      };
     case actionTypes.GET_PROFILE_SUCCESS:
       return {
         ...state,
-        isGettingProfile: false,
         user: {
           ...state.user,
           profile: payload.profile

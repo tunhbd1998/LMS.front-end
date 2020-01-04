@@ -22,10 +22,11 @@ import MemberLabInfo from '@containers/pages/member/lab-info';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { alreadyAuth, shouldAuth } from '@supporters/hoc';
 // import App from '@components/app';
+import Page from '@components/pages';
 import UserPage from '../pages/user-page';
+// import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 function Routers() {
-  console.log('render');
   return (
     <Router>
       <Switch>
@@ -77,6 +78,7 @@ function Routers() {
           abc="abc"
           component={UserPage}
         />
+        <Route path="/" component={Page} />
         <Route path="*">404 - Not Found!</Route>
       </Switch>
     </Router>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Container, Typography, Grid } from '@material-ui/core';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { H1, Logo, Input, Title, Button, Dropdown } from '@commons/components';
 import { genders } from '@commons/data/gender';
 import { universities } from '@commons/data/university';
@@ -13,9 +14,11 @@ import {
   processProvinces
 } from '@supporters/utils/process-data';
 import moment from 'moment';
-import { signUp } from '@supporters/store/redux/actions';
+import { signUpLab, resetAuthState } from '@supporters/store/redux/actions';
+import { get } from 'lodash';
+import { FlatNotification } from '../notifications/flat-notification';
 
-class SignUpAdmin extends React.Component {
+class SignUpLab extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,6 +41,8 @@ class SignUpAdmin extends React.Component {
       labDetailAddress: '',
       labSpecialize: ''
     };
+
+    props.actions.resetAuthState();
   }
 
   changeState = field => e => {
@@ -45,13 +50,7 @@ class SignUpAdmin extends React.Component {
   };
 
   render() {
-    const {
-      history,
-      rSignUp,
-      rFailedResponse,
-      rIsSigningUp,
-      rSuccessfuldResponse
-    } = this.props;
+    const { history, actions, authState, isProcessingAuth } = this.props;
 
     const {
       username,
@@ -73,10 +72,16 @@ class SignUpAdmin extends React.Component {
       labSpecialize
     } = this.state;
 
-    return (
+    return authState.status ? (
+      <FlatNotification
+        hasContainer="true"
+        title="Đăng ký tài khoản lab thành công"
+        content="Thông tin đăng ký tài khoản lab của bạn đã được hệ thống ghi nhận. Hệ thống sẽ xét duyệt đơn đăng ký và thông báo cho bạn qua email trong vòng 24h."
+      />
+    ) : (
       <Container maxWidth="sm" style={{ marginTop: 60 }}>
         <Logo />
-        <H1 style={{ margin: '20px 0' }}>Đăng ký tài khoản quản trị</H1>
+        <H1 style={{ margin: '20px 0' }}>Đăng ký tài khoản quản trị lab</H1>
 
         <Title>Thông tin lab của bạn</Title>
         <Grid container spacing={2}>
@@ -129,7 +134,7 @@ class SignUpAdmin extends React.Component {
           </Grid>
         </Grid>
 
-        <Title>Thông tin cá nhân</Title>
+        <Title>Thông tin cá nhân người quản trị lab</Title>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Input
@@ -168,7 +173,7 @@ class SignUpAdmin extends React.Component {
 
           <Grid item xs={12}>
             <Input
-              label="Số thẻ sinh viên"
+              label="Số thẻ nhân viên"
               id="i8"
               value={IDCardNumber}
               handleChange={this.changeState('IDCardNumber')}
@@ -226,27 +231,14 @@ class SignUpAdmin extends React.Component {
           </Grid>
 
           <Grid item xs={12}>
-            {rFailedResponse && rFailedResponse.message && (
-              <Typography gutterBottom align="center" color="secondary">
-                {rFailedResponse.message === 'username have exists'
-                  ? 'Tài khoản đã tồn tại'
-                  : rFailedResponse.message}
-              </Typography>
-            )}
-            {rSuccessfuldResponse && rSuccessfuldResponse.message && (
-              <Typography
-                gutterBottom
-                align="center"
-                style={{ color: color.success }}
-              >
-                {rSuccessfuldResponse.message}
-              </Typography>
-            )}
+            <Typography gutterBottom align="center" color="secondary">
+              {authState.message || null}
+            </Typography>
 
             <Button
               variant="contained"
               color="primary"
-              disabled={rIsSigningUp}
+              disabled={isProcessingAuth}
               onClick={() => {
                 if (
                   !username ||
@@ -268,8 +260,8 @@ class SignUpAdmin extends React.Component {
                 )
                   return;
 
-                rSignUp({
-                  user: {
+                actions.signUpLab(
+                  {
                     username,
                     password,
                     birthday,
@@ -282,7 +274,7 @@ class SignUpAdmin extends React.Component {
                     gender,
                     job
                   },
-                  lab: {
+                  {
                     name: labName,
                     university: labUniversity,
                     address: {
@@ -291,7 +283,7 @@ class SignUpAdmin extends React.Component {
                     },
                     specialize: labSpecialize
                   }
-                });
+                );
               }}
             >
               Đăng ký
@@ -325,10 +317,11 @@ class SignUpAdmin extends React.Component {
 export default withRouter(
   connect(
     state => ({
-      rFailedResponse: state.signUpReducer.failedResponse,
-      rSuccessfuldResponse: state.signUpReducer.successfulResponse,
-      rIsSigningUp: state.signUpReducer.isSigningUp
+      authState: get(state, ['authReducer', 'authState']),
+      isProcessingAuth: get(state, ['authReducer', 'isProcessingAuth'])
     }),
-    { rSignUp: signUp }
-  )(SignUpAdmin)
+    dispatch => ({
+      actions: bindActionCreators({ signUpLab, resetAuthState }, dispatch)
+    })
+  )(SignUpLab)
 );
