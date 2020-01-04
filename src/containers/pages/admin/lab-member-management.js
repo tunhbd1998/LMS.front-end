@@ -1,13 +1,10 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import { NavLabAdmin, NavLabAdminProject } from '@components/nav';
+import { NavLabAdmin } from '@components/nav';
 import { HeaderDashboard } from '@components/header-dashboard';
-import color from '@supporters/utils/color';
 import {
   Paper,
-  Typography,
-  Grid,
   List,
   ListItem,
   ListItemAvatar,
@@ -16,15 +13,10 @@ import {
   ListItemSecondaryAction,
   IconButton
 } from '@material-ui/core';
-import {
-  Clear,
-  Check,
-  CalendarToday,
-  PersonAddDisabled
-} from '@material-ui/icons';
-import { Input, Title, Button } from '@commons/components';
+import { Edit, PersonAddDisabled } from '@material-ui/icons';
+import { Title, Button } from '@commons/components';
 
-class MemberManagement extends React.Component {
+class TaskManagement extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -35,6 +27,8 @@ class MemberManagement extends React.Component {
   };
 
   render() {
+    const { history } = this.props;
+
     return (
       <div style={{ display: 'flex' }}>
         <NavLabAdmin />
@@ -51,156 +45,105 @@ class MemberManagement extends React.Component {
           <HeaderDashboard
             breadcrums={[
               { label: 'Viện khoa học không gian Hồ Chí Minh', to: '#' },
-              { label: 'Khám phá ngôi xao xa ơi là xa', to: '#' },
               { label: 'Thành viên', to: '#' }
             ]}
           />
           <div style={{ padding: 10, flex: 1, display: 'flex' }}>
-            <NavLabAdminProject style={{ marginRight: 20 }} />
-
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-              <Title>Yêu cầu (2)</Title>
-              <Paper
-                elevation={2}
+              <div
                 style={{
-                  padding: 20,
-                  boxShadow: ' 6px 0px 18px rgba(0, 0, 0, 0.06)'
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  alignItems: 'center'
                 }}
               >
-                <List>
-                  {[1, 2].map(index => (
-                    <ListItem key={index}>
-                      <ListItemAvatar>
-                        <Avatar
-                          src="/media/images/logo/logo192.png"
-                          alt="avatar"
-                        />
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary="Nguyễn Huy Hùng"
-                        secondary="Viện trưởng đại học Adam Eva"
-                      />
-                      <ListItemSecondaryAction>
-                        <IconButton>
-                          <Clear color="secondary" />
-                        </IconButton>
+                <div style={{ width: '50%' }}>
+                  <Button
+                    onClick={() => {
+                      history.push('/admin/lab/32/member/32/edit');
+                    }}
+                    color="primary"
+                    variant="contained"
+                  >
+                    THÊM quản trị viên
+                  </Button>
+                </div>
+              </div>
 
-                        <IconButton>
-                          <Check style={{ color: 'green' }} />
-                        </IconButton>
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  ))}
-                </List>
-              </Paper>
-
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Title>Tuyển thành viên</Title>
-                <IconButton
-                  color="primary"
+              <div
+                style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
+              >
+                <Title>Quản trị viên</Title>
+                <Paper
+                  elevation={2}
                   style={{
-                    marginLeft: 10,
-                    marginTop: 4,
-                    width: 39,
-                    height: 39,
-                    backgroundColor: color.main,
+                    padding: 20,
                     boxShadow: ' 6px 0px 18px rgba(0, 0, 0, 0.06)'
                   }}
                 >
-                  <Typography style={{ fontSize: 10, color: 'white' }}>
-                    BẬT
-                  </Typography>
-                </IconButton>
-              </div>
-
-              <Paper
-                elevation={2}
-                style={{
-                  padding: 20,
-                  boxShadow: ' 6px 0px 18px rgba(0, 0, 0, 0.06)'
-                }}
-              >
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <Input
-                      // value=""
-                      // handleChange={this.changeState('')}
-                      label="Mô tả yêu cầu"
-                      id="i6"
-                      multiline
-                      rows={4}
-                      rowsMax={6}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Button
-                      // disabled={}
-                      variant="contained"
-                      color="primary"
-                      // onClick={}
-                    >
-                      Xác nhận
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Paper>
-
-              <Title>Thành viên (3)</Title>
-              <Paper
-                elevation={2}
-                style={{
-                  padding: 20,
-                  boxShadow: ' 6px 0px 18px rgba(0, 0, 0, 0.06)'
-                }}
-              >
-                <Typography>Trưởng dự án</Typography>
-                <List>
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar
-                        src="/media/images/logo/logo192.png"
-                        alt="avatar"
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="Nguyễn Huy Hùng"
-                      secondary="Viện trưởng đại học Adam Eva"
-                    />
-                    <ListItemSecondaryAction>
-                      <IconButton>
-                        <CalendarToday />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                </List>
-
-                <Typography>Thành viên</Typography>
-                <List>
-                  {[1, 2, 3].map(index => (
-                    <ListItem key={index}>
-                      <ListItemAvatar>
-                        <Avatar
-                          src="/media/images/logo/logo192.png"
-                          alt="avatar"
+                  <List>
+                    {[1, 2, 3].map(index => (
+                      <ListItem key={index}>
+                        <ListItemAvatar>
+                          <Avatar
+                            src="/media/images/logo/logo192.png"
+                            alt="avatar"
+                          />
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary="Nguyễn Huy Hùng"
+                          secondary="Viện trưởng đại học Adam Eva"
                         />
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary="Nguyễn Huy Hùng"
-                        secondary="Viện trưởng đại học Adam Eva"
-                      />
-                      <ListItemSecondaryAction>
-                        <IconButton>
-                          <CalendarToday />
-                        </IconButton>
+                        <ListItemSecondaryAction>
+                          <IconButton
+                            onClick={() => {
+                              history.push('/admin/lab/32/member/32/edit');
+                            }}
+                          >
+                            <Edit />
+                          </IconButton>
 
-                        <IconButton>
-                          <PersonAddDisabled color="secondary" />
-                        </IconButton>
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  ))}
-                </List>
-              </Paper>
+                          <IconButton>
+                            <PersonAddDisabled color="secondary" />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Paper>
+
+                <Title>Thành viên của lab</Title>
+                <Paper
+                  elevation={2}
+                  style={{
+                    padding: 20,
+                    boxShadow: ' 6px 0px 18px rgba(0, 0, 0, 0.06)'
+                  }}
+                >
+                  <List>
+                    {[1, 2, 3].map(index => (
+                      <ListItem key={index}>
+                        <ListItemAvatar>
+                          <Avatar
+                            src="/media/images/logo/logo192.png"
+                            alt="avatar"
+                          />
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary="Nguyễn Huy Hùng"
+                          secondary="Viện trưởng đại học Adam Eva"
+                        />
+                        <ListItemSecondaryAction>
+                          <IconButton>
+                            <PersonAddDisabled color="secondary" />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Paper>
+              </div>
             </div>
           </div>
         </div>
@@ -209,4 +152,4 @@ class MemberManagement extends React.Component {
   }
 }
 
-export default withRouter(connect(null, {})(MemberManagement));
+export default withRouter(connect(null, {})(TaskManagement));

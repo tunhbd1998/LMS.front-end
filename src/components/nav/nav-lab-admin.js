@@ -46,7 +46,7 @@ class NavLabAdmin extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, history } = this.props;
 
     return (
       <div
@@ -70,12 +70,29 @@ class NavLabAdmin extends React.Component {
         <Title>Quản lý</Title>
         <List>
           {[
-            { icon: <Assignment />, text: 'Quản lý dự án' },
-            { icon: <Stars />, text: 'Quản lý sự kiện' },
-            { icon: <Person />, text: 'Quản lý thành viên' },
-            { icon: <Build />, text: 'Quản lý dụng cụ' }
+            {
+              icon: <Assignment />,
+              text: 'Quản lý dự án',
+              to: '/admin/lab/32/project/32/member'
+            },
+            {
+              icon: <Stars />,
+              text: 'Quản lý sự kiện',
+              to: '/admin/lab/32/event/32'
+            },
+            {
+              icon: <Person />,
+              text: 'Quản lý thành viên',
+              to: '/admin/lab/32/member'
+            },
+            {
+              icon: <Build />,
+              text: 'Quản lý dụng cụ',
+              to: '/admin/lab/32/request'
+            }
           ].map((tab, index) => (
             <ListItem
+              onClick={() => history.push(tab.to)}
               classes={{
                 root: classes.root,
                 selected: classes.selected
@@ -94,11 +111,20 @@ class NavLabAdmin extends React.Component {
         <Title>Yêu cầu</Title>
         <List>
           {[
-            { icon: <AllInbox />, text: 'Yêu cầu sử dụng lab' },
-            { icon: <Build />, text: 'Yêu cầu mượn dụng cụ' },
-            { icon: <Alarm />, text: 'Lịch hẹn' }
+            {
+              icon: <AllInbox />,
+              text: 'Yêu cầu sử dụng lab',
+              to: '/admin/lab/32/request'
+            },
+            {
+              icon: <Build />,
+              text: 'Yêu cầu mượn dụng cụ',
+              to: '/admin/lab/32/request'
+            },
+            { icon: <Alarm />, text: 'Lịch hẹn', to: '/admin/lab/32/request' }
           ].map((tab, index) => (
             <ListItem
+              onClick={() => history.push(tab.to)}
               classes={{
                 root: classes.root,
                 selected: classes.selected

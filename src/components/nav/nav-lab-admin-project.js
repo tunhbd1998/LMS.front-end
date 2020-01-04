@@ -17,7 +17,7 @@ class NavLabAdminProject extends React.Component {
   };
 
   render() {
-    const { style } = this.props;
+    const { style, history } = this.props;
 
     return (
       <div
@@ -26,6 +26,7 @@ class NavLabAdminProject extends React.Component {
           flexDirection: 'column',
           background: 'white',
           borderRadius: 4,
+          width: 300,
           minWidth: 300,
           padding: 20,
           boxShadow: ' 6px 0px 18px rgba(0, 0, 0, 0.06)',
@@ -33,7 +34,13 @@ class NavLabAdminProject extends React.Component {
           ...style
         }}
       >
-        <Button variant="outlined" color="primary" onClick={() => {}}>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => {
+            history.push('/admin/lab/32/project/create');
+          }}
+        >
           Thêm dự án
         </Button>
 
