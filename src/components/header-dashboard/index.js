@@ -2,8 +2,9 @@ import React from 'react';
 import { IconButton, Link, Typography, Breadcrumbs } from '@material-ui/core';
 import { Settings } from '@material-ui/icons';
 import color from '@supporters/utils/color';
+import { withRouter } from 'react-router';
 
-export function HeaderDashboard({ breadcrums }) {
+function HeaderDashboardC({ breadcrums, history }) {
   return (
     <div
       style={{
@@ -31,9 +32,11 @@ export function HeaderDashboard({ breadcrums }) {
           );
         })}
       </Breadcrumbs>
-      <IconButton>
+      <IconButton onClick={() => history.push('/admin/lab/32/edit')}>
         <Settings style={{ color: 'white' }} />
       </IconButton>
     </div>
   );
 }
+
+export const HeaderDashboard = withRouter(HeaderDashboardC);

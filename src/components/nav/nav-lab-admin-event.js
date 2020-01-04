@@ -9,7 +9,7 @@ import {
   ListItemSecondaryAction,
   IconButton
 } from '@material-ui/core';
-import { MoreHoriz } from '@material-ui/icons';
+import { MoreHoriz, Edit } from '@material-ui/icons';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { Title, Button } from '@commons/components';
@@ -43,19 +43,29 @@ class NavLabAdminEvent extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, style, history } = this.props;
     return (
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
+          background: 'white',
+          borderRadius: 4,
+          minWidth: 300,
           width: 300,
           padding: 20,
           boxShadow: ' 6px 0px 18px rgba(0, 0, 0, 0.06)',
-          overflowY: 'auto'
+          overflowY: 'auto',
+          ...style
         }}
       >
-        <Button variant="outlined" color="primary" onClick={() => {}}>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => {
+            history.push('/admin/lab/32/event/32/edit');
+          }}
+        >
           Thêm sự kiện
         </Button>
 
@@ -69,6 +79,9 @@ class NavLabAdminEvent extends React.Component {
             })
             .map((tab, index) => (
               <ListItem
+                onClick={() => {
+                  history.push('/admin/lab/32/event/32');
+                }}
                 classes={{
                   root: classes.root,
                   selected: classes.selected
@@ -95,8 +108,15 @@ class NavLabAdminEvent extends React.Component {
                   </Typography>
                 </ListItemText>
                 <ListItemSecondaryAction>
-                  <IconButton size="small" edge="end" aria-label="comments">
-                    <MoreHoriz />
+                  <IconButton
+                    onClick={() => {
+                      history.push('/admin/lab/32/event/32/edit');
+                    }}
+                    size="small"
+                    edge="end"
+                    aria-label="comments"
+                  >
+                    <Edit />
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>

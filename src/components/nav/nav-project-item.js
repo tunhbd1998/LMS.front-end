@@ -15,10 +15,12 @@ import {
   Assignment,
   Person,
   CalendarToday,
-  MoreHoriz
+  MoreHoriz,
+  Edit
 } from '@material-ui/icons';
 import color from '@supporters/utils/color';
 import { withStyles } from '@material-ui/core/styles';
+import { withRouter } from 'react-router';
 
 const styles = {
   root: {
@@ -36,8 +38,8 @@ const styles = {
   }
 };
 
-function ProjectItemComp({ tab, classes }) {
-  const [open, setopen] = useState(false);
+function ProjectItemComp({ tab, classes, history }) {
+  const [open, setopen] = useState(true);
   return (
     <>
       <ListItem
@@ -67,8 +69,13 @@ function ProjectItemComp({ tab, classes }) {
           </Typography>
         </ListItemText>
         <ListItemSecondaryAction>
-          <IconButton size="small" edge="end" aria-label="comments">
-            <MoreHoriz />
+          <IconButton
+            onClick={() => history.push('/admin/lab/:lid/project/:pid/edit')}
+            size="small"
+            edge="end"
+            aria-label="comments"
+          >
+            <Edit />
           </IconButton>
         </ListItemSecondaryAction>
       </ListItem>
@@ -76,11 +83,24 @@ function ProjectItemComp({ tab, classes }) {
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {[
-            { icon: <Person />, text: 'Thành viên' },
-            { icon: <Assignment />, text: 'Công việc' },
-            { icon: <CalendarToday />, text: 'Lịch làm việc' }
+            {
+              icon: <Person />,
+              to: '/admin/lab/32/project/32/member',
+              text: 'Thành viên'
+            },
+            {
+              icon: <Assignment />,
+              to: '/admin/lab/32/project/32/task',
+              text: 'Công việc'
+            },
+            {
+              icon: <CalendarToday />,
+              to: '/admin/lab/32/project/32/schedule',
+              text: 'Lịch làm việc'
+            }
           ].map((tab2, index) => (
             <ListItem
+              onClick={() => history.push(tab2.to)}
               classes={{
                 root: classes.root
               }}
@@ -100,4 +120,4 @@ function ProjectItemComp({ tab, classes }) {
   );
 }
 
-export default withStyles(styles)(ProjectItemComp);
+export default withStyles(styles)(withRouter(ProjectItemComp));
